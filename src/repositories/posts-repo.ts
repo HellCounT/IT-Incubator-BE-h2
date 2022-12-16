@@ -1,11 +1,11 @@
-type Post = {
+export type Post = {
     title: string,
     shortDescription: string,
     content: string,
     blogId: number
 }
 
-const postsDB: Array<Post> = [
+export const postsDb: Array<Post> = [
     {
         title: "Funny Cats",
         shortDescription: "Some text about cats",
