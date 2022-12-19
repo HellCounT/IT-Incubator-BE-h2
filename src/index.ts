@@ -6,9 +6,9 @@ import {deleteAllRouter} from "./routes/delete-all-router";
 const app = express()
 const port = process.env.PORT || 3000
 
-app.use('/api/blogs', blogsRouter)
-app.use('/api/posts', postsRouter)
-app.use('/api/testing/all-data', deleteAllRouter)
+app.use('/blogs', blogsRouter)
+app.use('/posts', postsRouter)
+app.use('/testing/all-data', deleteAllRouter)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
