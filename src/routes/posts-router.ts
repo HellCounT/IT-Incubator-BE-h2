@@ -9,7 +9,8 @@ postsRouter.get('/', (req: Request, res: Response) => {
     res.send(postsDb).status(200)
 })
 
-postsRouter.post('/', (req: Request, res: Response) => {
+postsRouter.post('/',
+    (req: Request, res: Response) => {
 
 })
 

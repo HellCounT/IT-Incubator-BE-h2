@@ -1,5 +1,6 @@
 import express, {Request, Response, Router} from "express";
 import {Blog, blogsDb} from "../repositories/blogs-repo";
+import {basicAuth} from "../middleware/auth";
 
 export const blogsRouter = Router({})
 
@@ -9,7 +10,7 @@ blogsRouter.get('/', (req: Request, res: Response) => {
     res.send(blogsDb).status(200);
 })
 
-blogsRouter.post('/', (req: Request, res: Response) => {
+blogsRouter.post('/', basicAuth, (req: Request, res: Response) => {
     // Blog adding
     const dateNow = new Date()
     const addBlog: Blog = {
@@ -33,10 +34,10 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-blogsRouter.put('/:id', (req: Request, res: Response) => {
+blogsRouter.put('/:id', basicAuth, (req: Request, res: Response) => {
 
 })
 
-blogsRouter.delete('/:id', (req: Request, res: Response) => {
+blogsRouter.delete('/:id', basicAuth, (req: Request, res: Response) => {
 
 })
