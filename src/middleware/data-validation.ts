@@ -7,7 +7,7 @@ export const inputValidation = (req: Request, res: Response, next: NextFunction)
         res.status(400).send({
                 errorMessages: errorMessagesArray.map(e => ({
                     message: e.msg,
-                    field: e.location
+                    field: e.param
                 }))
             }
         )
