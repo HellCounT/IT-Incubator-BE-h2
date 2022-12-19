@@ -8,12 +8,6 @@ const port = process.env.PORT || 3000
 app.use('/api/blogs', blogsRouter)
 app.use('/api/posts', postsRouter)
 
-type FieldError = {
-    message: string,
-    field: string
-}
-type APIErrorResult = Array<FieldError>
-
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })

@@ -1,11 +1,11 @@
-export type Blog = {
+type Blog = {
     id: string,
     name: string,
     description: string,
     websiteUrl: string
 }
 
-export const blogsDb: Array<Blog> = [
+export let blogsDb: Array<Blog> = [
     {
         id: "id1",
         name: "Our Pets Blog",
@@ -45,7 +45,27 @@ export const blogsRepo = {
         blogsDb.push(newBlog)
         return newBlog
     },
-    updateBlog(title: string, desc: string, website: string) {
-
+    updateBlog(inputId: string, title: string, desc: string, website: string) {
+        if (!(blogsDb.find(b => b.id === inputId))) {
+            return false
+        } else {
+        (blogsDb.forEach((b) => {
+            if (b.id === inputId) {
+                b.name = title
+                b.description = desc
+                b.websiteUrl = website
+            }
+        }))
+            return true
+        }
+    },
+    deleteBlog(inputId: string) {
+        const foundBlog = blogsDb.find(b => (b.id === inputId))
+        if (foundBlog !== undefined) {
+            blogsDb = blogsDb.filter(b => b.id !== inputId)
+            return true
+        } else {
+            return false
+        }
     }
 }
