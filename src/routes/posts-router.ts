@@ -1,5 +1,6 @@
 import express, {Request, Response, Router} from "express";
 import {postsDb} from "../repositories/posts-repo";
+import {basicAuth} from "../middleware/auth";
 
 export const postsRouter = Router({})
 
@@ -9,8 +10,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
     res.send(postsDb).status(200)
 })
 
-postsRouter.post('/',
-    (req: Request, res: Response) => {
+postsRouter.post('/', basicAuth, (req: Request, res: Response) => {
 
 })
 
@@ -24,11 +24,11 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-postsRouter.put('/:id', (req: Request, res: Response) => {
+postsRouter.put('/:id', basicAuth, (req: Request, res: Response) => {
 
 })
 
-postsRouter.delete('/:id', (req: Request, res: Response) => {
+postsRouter.delete('/:id', basicAuth, (req: Request, res: Response) => {
 
 })
 
