@@ -36,6 +36,13 @@ export var postsDb: Array<Post> = [
     }
 ]
 
+type Response<T> = {
+    status: 'error' | 'success',
+    data: T | null
+    error: string | null
+    statusCode: number
+}
+
 export const postsRepo = {
     viewAllPosts() {
         return(postsDb)
@@ -62,18 +69,22 @@ export const postsRepo = {
         else return null
     },
     updatePost(inputId: string, postTitle: string, short: string, text: string, blogId: string) {
-        if (!(postsDb.find(p => p.id === inputId))) {
-            return false
-        } else {
-            (postsDb.forEach((p) => {
-                if (p.id === inputId) {
-                    p.title = postTitle
-                    p.shortDescription = short
-                    p.content = text
-                    p.blogId = blogId
-                }
-            }))
-         }
+        const foundBlog = blogsDb.find(b => b.id === blogId)
+        if (foundBlog) {
+            if (!(postsDb.find(p => p.id === inputId))) {
+                return null
+            } else {
+                (postsDb.forEach((p) => {
+                    if (p.id === inputId) {
+                        p.title = postTitle
+                        p.shortDescription = short
+                        p.content = text
+                        p.blogId = blogId
+                        p.blogName = foundBlog.name
+                    }
+                }))
+            }
+        } else return null
     },
     deletePost(inputId: string) {
         const foundPost = postsDb.find(p => p.id === inputId)
