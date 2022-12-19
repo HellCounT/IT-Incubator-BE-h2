@@ -10,10 +10,6 @@ postsRouter.get('/', (req: Request, res: Response) => {
     res.send(postsDb).status(200)
 })
 
-postsRouter.post('/', basicAuth, (req: Request, res: Response) => {
-
-})
-
 postsRouter.get('/:id', (req: Request, res: Response) => {
     const postId: string = req.params.id
     const foundPost = postsDb.find(p => (p.id === postId))
@@ -22,6 +18,10 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     } else {
         res.sendStatus(404)
     }
+})
+
+postsRouter.post('/', basicAuth, (req: Request, res: Response) => {
+
 })
 
 postsRouter.put('/:id', basicAuth, (req: Request, res: Response) => {

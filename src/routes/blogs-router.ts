@@ -1,5 +1,5 @@
 import express, {Request, Response, Router} from "express";
-import {Blog, blogsDb} from "../repositories/blogs-repo";
+import {blogsDb, blogsRepo} from "../repositories/blogs-repo";
 import {basicAuth} from "../middleware/auth";
 
 export const blogsRouter = Router({})
@@ -7,31 +7,22 @@ export const blogsRouter = Router({})
 blogsRouter.use(express.json())
 
 blogsRouter.get('/', (req: Request, res: Response) => {
-    res.send(blogsDb).status(200);
+    res.send(blogsRepo.viewAllBlogs()).status(200);
+})
+
+blogsRouter.get('/:id', (req: Request, res: Response) => {
+    const blogIdSearchResult = blogsRepo.findBlogById(req.params.id)
+    if (blogIdSearchResult) {
+        res.status(200).send(blogIdSearchResult)
+    } else {
+        res.sendStatus(404)
+    }
 })
 
 blogsRouter.post('/', basicAuth, (req: Request, res: Response) => {
     // Blog adding
-    const dateNow = new Date()
-    const addBlog: Blog = {
-        id: +dateNow,
-        name: req.body.name,
-        description: req.body.description,
-        websiteUrl: req.body.websiteUrl,
-    }
-    blogsDb.push(addBlog)
-
-    return res.status(201).send(addBlog)
-})
-
-blogsRouter.get('/:id', (req: Request, res: Response) => {
-    const blogId: number = +req.params.id
-    const foundBlog = blogsDb.find(b => (b.id === blogId))
-    if (foundBlog) {
-        res.status(200).send(foundBlog)
-    } else {
-        res.sendStatus(404)
-    }
+    const blogAddResult = blogsRepo.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
+    return res.status(201).send(blogAddResult)
 })
 
 blogsRouter.put('/:id', basicAuth, (req: Request, res: Response) => {
