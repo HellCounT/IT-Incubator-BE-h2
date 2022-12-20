@@ -66,9 +66,9 @@ postsRouter.put('/:id', basicAuth,
     (req: Request, res: Response) => {
     const flagUpdate = !postsRepo.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
     if (flagUpdate) {
-        res.sendStatus(204)
-    } else {
         res.sendStatus(404)
+    } else {
+        res.sendStatus(204)
     }
 })
 
