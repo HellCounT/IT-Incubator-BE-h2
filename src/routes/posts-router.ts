@@ -46,7 +46,7 @@ postsRouter.post('/', basicAuth,
     (req: Request, res: Response) => {
     const postAddResult = postsRepo.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
     if (postAddResult) {
-        res.send(postAddResult).status(201)
+        res.status(201).send(postAddResult)
     } else {
         res.sendStatus(400)
     }
