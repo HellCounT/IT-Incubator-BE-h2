@@ -1,5 +1,5 @@
 import express, {Request, Response, Router} from "express";
-import {postsDb, postsRepo} from "../repositories/posts-repo";
+import {postsRepo} from "../repositories/posts-repo";
 import {basicAuth} from "../middleware/auth";
 import {body, CustomValidator} from "express-validator";
 import {inputValidation} from "../middleware/data-validation";
@@ -64,7 +64,7 @@ postsRouter.put('/:id', basicAuth,
     inputValidation,
     //Handlers
     (req: Request, res: Response) => {
-    const flagUpdate = !postsRepo.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+    const flagUpdate = postsRepo.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
     if (flagUpdate) {
         res.sendStatus(204)
     } else {
