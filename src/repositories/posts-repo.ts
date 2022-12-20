@@ -80,15 +80,6 @@ export const postsRepo = {
         post.blogId = blogId
         post.blogName = foundBlog.name
         return true
-        // postsDb.forEach((p) => {
-        //     if (p.id === inputId) {
-        //         p.title = postTitle
-        //         p.shortDescription = short
-        //         p.content = text
-        //         p.blogId = blogId
-        //         p.blogName = foundBlog.name
-        //     }
-        // })
     },
     deletePost(inputId: string) {
         const foundPost = postsDb.find(p => p.id === inputId)
