@@ -45,7 +45,7 @@ type Response<T> = {
 
 export const postsRepo = {
     viewAllPosts() {
-        return(postsDb)
+        return (postsDb)
     },
     findPostById(postId: string) {
         const foundPost = postsDb.find(p => (p.id === postId))
@@ -57,41 +57,43 @@ export const postsRepo = {
         const dateNow = new Date()
         const foundBlog = blogsDb.find(b => (b.id === blogId))
         if (foundBlog) {
-        const newPost: Post = {
-            id: (+dateNow).toString(),
-            title: postTitle,
-            shortDescription: short,
-            content: text,
-            blogId: blogId,
-            blogName: foundBlog.name
-        }
-        postsDb.push(newPost)
-        return newPost
-        }
-        else return null
+            const newPost: Post = {
+                id: (+dateNow).toString(),
+                title: postTitle,
+                shortDescription: short,
+                content: text,
+                blogId: blogId,
+                blogName: foundBlog.name
+            }
+            postsDb.push(newPost)
+            return newPost
+        } else return null
     },
     updatePost(inputId: string, postTitle: string, short: string, text: string, blogId: string) {
         const foundBlog = blogsDb.find(b => b.id === blogId)
-        if (foundBlog) {
-            if (!(postsDb.find(p => p.id === inputId))) {
-                return null
-            } else {
-                (postsDb.forEach((p) => {
-                    if (p.id === inputId) {
-                        p.title = postTitle
-                        p.shortDescription = short
-                        p.content = text
-                        p.blogId = blogId
-                        p.blogName = foundBlog.name
-                    }
-                }))
-            }
-        } else return null
+        if (!foundBlog) return null
+        const post = postsDb.find(p => p.id === inputId)
+        if (!post) return null
+        post.title = postTitle
+        post.shortDescription = short
+        post.content = text
+        post.blogId = blogId
+        post.blogName = foundBlog.name
+        return true
+        // postsDb.forEach((p) => {
+        //     if (p.id === inputId) {
+        //         p.title = postTitle
+        //         p.shortDescription = short
+        //         p.content = text
+        //         p.blogId = blogId
+        //         p.blogName = foundBlog.name
+        //     }
+        // })
     },
     deletePost(inputId: string) {
         const foundPost = postsDb.find(p => p.id === inputId)
         if (foundPost !== undefined) {
-            postsDb = postsDb.filter(p=> p.id !== inputId)
+            postsDb = postsDb.filter(p => p.id !== inputId)
             return true
         } else {
             return false
