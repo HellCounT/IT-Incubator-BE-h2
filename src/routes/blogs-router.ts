@@ -9,9 +9,9 @@ export const blogsRouter = Router({})
 blogsRouter.use(express.json())
 
 //Validators
-const nameCheck = body('name').isString().trim().isLength({min: 1, max: 15}).withMessage("Name is invalid")
-const descriptionCheck = body('description').isString().trim().isLength({min: 1, max: 500}).withMessage("Description is invalid")
-const urlCheck = body('websiteUrl').isString().trim().isLength({min: 1, max: 100}).isURL().withMessage("URL is invalid")
+const nameCheck = body('name').exists().isString().trim().isLength({min: 1, max: 15}).withMessage("Name is invalid")
+const descriptionCheck = body('description').exists().isString().trim().isLength({min: 1, max: 500}).withMessage("Description is invalid")
+const urlCheck = body('websiteUrl').exists().isString().trim().isLength({min: 1, max: 100}).isURL().withMessage("URL is invalid")
 
 blogsRouter.get('/', (req: Request, res: Response) => {
     res.send(blogsRepo.viewAllBlogs()).status(200);
