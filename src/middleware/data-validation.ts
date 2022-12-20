@@ -5,7 +5,7 @@ export const inputValidation = (req: Request, res: Response, next: NextFunction)
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
     if (errorMessagesArray.length > 0) {
         res.status(400).send({
-                errorMessages: errorMessagesArray.map(e => ({
+                errorsMessages: errorMessagesArray.map(e => ({
                     message: e.msg,
                     field: e.param
                 }))
