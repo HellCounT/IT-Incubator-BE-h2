@@ -49,7 +49,9 @@ export const postsRepo = {
     },
     findPostById(postId: string) {
         const foundPost = postsDb.find(p => (p.id === postId))
-        return foundPost
+        if (foundPost) {
+            return foundPost
+        } else return null
     },
     createPost(postTitle: string, short: string, text: string, blogId: string) {
         const dateNow = new Date()
