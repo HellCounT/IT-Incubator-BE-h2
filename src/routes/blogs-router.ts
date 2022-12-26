@@ -1,5 +1,5 @@
 import express, {Request, Response, Router} from "express";
-import {blogsRepo} from "../repositories/blogs-repo";
+import {blogsRepo} from "../repositories/blogs-database";
 import {basicAuth} from "../middleware/auth";
 import {body} from "express-validator";
 import {inputValidation} from "../middleware/data-validation";

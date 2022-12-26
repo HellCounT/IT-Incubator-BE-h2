@@ -1,4 +1,4 @@
-import {blogsDb} from "./blogs-repo";
+import {blogsDb} from "./blogs-memory";
 
 type Post = {
     id: string
