@@ -37,7 +37,7 @@ export const runDb = async() => {
         // Connect the client to server
         await client.connect()
         // Establish and verify connection
-        await client.db("blogs-platform").command({ping: 1})
+        await client.db().command({ping: 1})
         console.log('Connected successfully to mongo server')
     } catch (e) {
         console.log(e)
