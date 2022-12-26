@@ -9,7 +9,7 @@ type Response<T> = {
 
 export const postsRepo = {
     async viewAllPosts() {
-        return postsCollection
+        return postsCollection.find().toArray()
     },
     async findPostById(postId: string) {
         const foundPost = await postsCollection.find({id: postId})
