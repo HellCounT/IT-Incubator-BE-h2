@@ -8,5 +8,6 @@ export const deleteAllRouter = Router({})
 deleteAllRouter.delete('/', async (req: Request, res: Response) => {
     await blogsCollection.deleteMany({})
     await postsCollection.deleteMany({})
+    res.sendStatus(204)
 })
 
