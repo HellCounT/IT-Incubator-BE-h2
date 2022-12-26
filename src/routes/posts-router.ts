@@ -3,7 +3,8 @@ import {postsRepo} from "../repositories/posts-database";
 import {basicAuth} from "../middleware/auth";
 import {body, CustomValidator} from "express-validator";
 import {inputValidation} from "../middleware/data-validation";
-import {__blogsDb} from "../repositories/blogs-database";
+import {blogsDb} from "../repositories/blogs-memory";
+import {blogsCollection} from "../repositories/db";
 
 export const postsRouter = Router({})
 
@@ -13,8 +14,8 @@ postsRouter.use(express.json())
 const titleCheck = body("title").isString().trim().isLength({min: 1, max: 30}).withMessage("Title is invalid")
 const shortDescriptionCheck = body("shortDescription").isString().trim().isLength({min: 1, max: 100}).withMessage("Short description is invalid")
 const contentCheck = body("content").isString().trim().isLength({min: 1, max: 1000}).withMessage("Content is invalid")
-const isValidBlogId: CustomValidator = (id: string) => {
-    if (__blogsDb.find(b => (b.id === id))) {
+const isValidBlogId: CustomValidator = async (id: string) => {
+    if (await blogsCollection.findOne({id: id})) {
         return true
     } else {
         throw new Error
