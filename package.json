@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "build": "tsc",
     "dev": "yarn nodemon --inspect src/index.ts"
   },
   "dependencies": {

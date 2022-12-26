@@ -29,7 +29,7 @@ export type Post = {
     createdAt: string
 }
 
-export const postsCollection = client.db().collection<Post>('posts')
+export const postsCollection = client.db('blogs-platform').collection<Post>('posts')
 export const blogsCollection = client.db().collection<Blog>('blogs')
 
 export const runDb = async() => {
