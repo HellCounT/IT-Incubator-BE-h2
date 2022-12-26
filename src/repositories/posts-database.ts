@@ -12,7 +12,7 @@ export const postsRepo = {
         return postsCollection.find().toArray()
     },
     async findPostById(postId: string) {
-        const foundPost = await postsCollection.find({id: postId})
+        const foundPost = await postsCollection.findOne({id: postId})
         if (foundPost) {
             return foundPost
         } else return null

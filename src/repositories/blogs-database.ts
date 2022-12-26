@@ -4,8 +4,8 @@ export const blogsRepo = {
     async viewAllBlogs() {
         return blogsCollection.find().toArray()
     },
-    async findBlogById(blogId: string) {
-        const foundBlog = await blogsCollection.findOne({id: blogId})
+    async findBlogById(id: string) {
+        const foundBlog = await blogsCollection.findOne({id: id})
         if (foundBlog) {
             return foundBlog
         } else return null
