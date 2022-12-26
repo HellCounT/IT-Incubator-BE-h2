@@ -24,10 +24,7 @@ const isValidBlogId: CustomValidator = async (id: string) => {
 const blogIdCheck = body("blogId").exists().isString().custom(isValidBlogId).withMessage('Invalid parent blog id')
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-    const postFinderResult = await postsRepo.viewAllPosts()
-    if (postFinderResult) {
-        res.send(postFinderResult).status(200)
-    } else res.sendStatus(404)
+    res.send(await postsRepo.viewAllPosts()).status(200)
 })
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
