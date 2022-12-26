@@ -13,8 +13,8 @@ postsRouter.use(express.json())
 const titleCheck = body("title").isString().trim().isLength({min: 1, max: 30}).withMessage("Title is invalid")
 const shortDescriptionCheck = body("shortDescription").isString().trim().isLength({min: 1, max: 100}).withMessage("Short description is invalid")
 const contentCheck = body("content").isString().trim().isLength({min: 1, max: 1000}).withMessage("Content is invalid")
-const isValidBlogId: CustomValidator = async (id: string) => {
-    if (await blogsCollection.findOne({id: id})) {
+const isValidBlogId: CustomValidator = async (blogId: string) => {
+    if (await blogsCollection.findOne({id: blogId})) {
         return true
     } else {
         throw new Error
