@@ -28,7 +28,7 @@ export const postsRepo = {
                 content: text,
                 blogId: blogId,
                 blogName: foundBlog.name,
-                createdAt: new Date().toISOString()
+                createdAt: dateNow.toISOString()
             }
             await postsCollection.insertOne(newPost)
             return newPost
@@ -41,7 +41,7 @@ export const postsRepo = {
                     {title: postTitle,
                     shortDescription: short,
                     content: text, blogId: blogId,
-                        blogName: foundBlog.name}
+                    blogName: foundBlog.name}
             })
         return result.matchedCount === 1
     },

@@ -1,7 +1,14 @@
 import {MongoClient} from "mongodb";
+import dotenv from "dotenv"
+dotenv.config()
 
-const mongoUri = process.env.mongoURI || "mongodb+srv://admin:D0ntP@yMyBi11s!@cluster0.3c7d4mo.mongodb.net/blog-platform-dev?retryWrites=true&w=majority"
+const mongoUri = process.env.MONGO_URL
 
+if (!mongoUri) {
+    throw new Error('MONGO URL IS NOT FOUND')
+}
+
+console.log(mongoUri)
 export const client = new MongoClient(mongoUri)
 
 export type Blog = {
@@ -25,15 +32,15 @@ export type Post = {
 export const postsCollection = client.db('blogs-platform').collection<Post>('posts')
 export const blogsCollection = client.db('blogs-platform').collection<Blog>('blogs')
 
-export async function runDb() {
+export const runDb = async() => {
     try {
         // Connect the client to server
         await client.connect()
         // Establish and verify connection
         await client.db("blogs-platform").command({ping: 1})
         console.log('Connected successfully to mongo server')
-    } catch {
-        console.log('Connection is not established')
+    } catch (e) {
+        console.log(e)
         // Ensures that the client will close when you finish/error
         await client.close()
     }
