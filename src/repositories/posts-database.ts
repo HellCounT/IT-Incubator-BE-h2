@@ -11,8 +11,8 @@ export const postsRepo = {
     async viewAllPosts() {
         return postsCollection.find().toArray()
     },
-    async findPostById(postId: string) {
-        const foundPost = await postsCollection.findOne({id: postId})
+    async findPostById(id: string) {
+        const foundPost = await postsCollection.findOne({id: id})
         if (foundPost) {
             return foundPost
         } else return null
