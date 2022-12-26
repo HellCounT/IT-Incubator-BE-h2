@@ -6,8 +6,6 @@ import {inputValidation} from "../middleware/data-validation";
 
 export const blogsRouter = Router({})
 
-blogsRouter.use(express.json())
-
 //Validators
 const nameCheck = body('name').exists().isString().trim().isLength({min: 1, max: 15}).withMessage("Name is invalid")
 const descriptionCheck = body('description').exists().isString().trim().isLength({min: 1, max: 500}).withMessage("Description is invalid")

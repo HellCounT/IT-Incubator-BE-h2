@@ -7,8 +7,6 @@ import {blogsCollection} from "../repositories/db";
 
 export const postsRouter = Router({})
 
-postsRouter.use(express.json())
-
 //Validators
 const titleCheck = body("title").isString().trim().isLength({min: 1, max: 30}).withMessage("Title is invalid")
 const shortDescriptionCheck = body("shortDescription").isString().trim().isLength({min: 1, max: 100}).withMessage("Short description is invalid")
