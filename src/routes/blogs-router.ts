@@ -12,7 +12,7 @@ const descriptionCheck = body('description').exists().isString().trim().isLength
 const urlCheck = body('websiteUrl').exists().isString().trim().isLength({min: 1, max: 100}).isURL().withMessage("URL is invalid")
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    res.send(await blogsRepo.viewAllBlogs()).status(200);
+    res.status(200).send(await blogsRepo.viewAllBlogs());
 })
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
