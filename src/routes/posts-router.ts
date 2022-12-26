@@ -22,15 +22,15 @@ const isValidBlogId: CustomValidator = (id: string) => {
 }
 const blogIdCheck = body("blogId").exists().isString().custom(isValidBlogId).withMessage('Invalid parent blog id')
 
-postsRouter.get('/', (req: Request, res: Response) => {
-    const postFinderResult = postsRepo.viewAllPosts()
+postsRouter.get('/', async (req: Request, res: Response) => {
+    const postFinderResult = await postsRepo.viewAllPosts()
     if (postFinderResult) {
         res.send(postFinderResult).status(200)
     } else res.sendStatus(404)
 })
 
-postsRouter.get('/:id', (req: Request, res: Response) => {
-    const postIdSearchResult = postsRepo.findPostById(req.params.id)
+postsRouter.get('/:id', async (req: Request, res: Response) => {
+    const postIdSearchResult = await postsRepo.findPostById(req.params.id)
     if (postIdSearchResult) {
         res.status(200).send(postIdSearchResult)
     } else {
@@ -46,8 +46,8 @@ postsRouter.post('/', basicAuth,
     blogIdCheck,
     inputValidation,
     //Handlers
-    (req: Request, res: Response) => {
-    const postAddResult = postsRepo.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+    async (req: Request, res: Response) => {
+    const postAddResult = await postsRepo.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
     if (postAddResult) {
         res.status(201).send(postAddResult)
     } else {
@@ -63,8 +63,8 @@ postsRouter.put('/:id', basicAuth,
     blogIdCheck,
     inputValidation,
     //Handlers
-    (req: Request, res: Response) => {
-    const flagUpdate = postsRepo.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+    async (req: Request, res: Response) => {
+    const flagUpdate = await postsRepo.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
     if (flagUpdate) {
         res.sendStatus(204)
     } else {
@@ -72,8 +72,8 @@ postsRouter.put('/:id', basicAuth,
     }
 })
 
-postsRouter.delete('/:id', basicAuth, (req: Request, res: Response) => {
-    if (postsRepo.deletePost(req.params.id)) {
+postsRouter.delete('/:id', basicAuth, async (req: Request, res: Response) => {
+    if (await postsRepo.deletePost(req.params.id)) {
         res.sendStatus(204)
     } else {
         res.sendStatus(404)

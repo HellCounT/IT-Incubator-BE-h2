@@ -27,14 +27,14 @@ export let blogsDb: Array<Blog> = [
 ]
 
 export const blogsRepo = {
-    viewAllBlogs() {
+    async viewAllBlogs() {
         return(blogsDb)
     },
-    findBlogById(blogId: string) {
+    async findBlogById(blogId: string) {
         const foundBlog = blogsDb.find(b => (b.id === blogId))
         return foundBlog
     },
-    createBlog(title: string, desc: string, website: string) {
+    async createBlog(title: string, desc: string, website: string) {
         const dateNow = new Date()
         const newBlog: Blog = {
             id: (+dateNow).toString(),
@@ -45,7 +45,7 @@ export const blogsRepo = {
         blogsDb.push(newBlog)
         return newBlog
     },
-    updateBlog(inputId: string, title: string, desc: string, website: string) {
+    async updateBlog(inputId: string, title: string, desc: string, website: string) {
         if (!(blogsDb.find(b => b.id === inputId))) {
             return false
         } else {
@@ -59,7 +59,7 @@ export const blogsRepo = {
             return true
         }
     },
-    deleteBlog(inputId: string) {
+    async deleteBlog(inputId: string) {
         const foundBlog = blogsDb.find(b => (b.id === inputId))
         if (foundBlog !== undefined) {
             blogsDb = blogsDb.filter(b => b.id !== inputId)

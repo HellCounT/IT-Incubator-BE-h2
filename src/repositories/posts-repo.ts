@@ -44,16 +44,16 @@ type Response<T> = {
 }
 
 export const postsRepo = {
-    viewAllPosts() {
+    async viewAllPosts() {
         return (postsDb)
     },
-    findPostById(postId: string) {
+    async findPostById(postId: string) {
         const foundPost = postsDb.find(p => (p.id === postId))
         if (foundPost) {
             return foundPost
         } else return null
     },
-    createPost(postTitle: string, short: string, text: string, blogId: string) {
+    async createPost(postTitle: string, short: string, text: string, blogId: string) {
         const dateNow = new Date()
         const foundBlog = blogsDb.find(b => (b.id === blogId))
         if (foundBlog) {
@@ -69,7 +69,7 @@ export const postsRepo = {
             return newPost
         } else return null
     },
-    updatePost(inputId: string, postTitle: string, short: string, text: string, blogId: string) {
+    async updatePost(inputId: string, postTitle: string, short: string, text: string, blogId: string) {
         const foundBlog = blogsDb.find(b => b.id === blogId)
         if (!foundBlog) return null
         const post = postsDb.find(p => p.id === inputId)
@@ -81,7 +81,7 @@ export const postsRepo = {
         post.blogName = foundBlog.name
         return true
     },
-    deletePost(inputId: string) {
+    async deletePost(inputId: string) {
         const foundPost = postsDb.find(p => p.id === inputId)
         if (foundPost !== undefined) {
             postsDb = postsDb.filter(p => p.id !== inputId)
