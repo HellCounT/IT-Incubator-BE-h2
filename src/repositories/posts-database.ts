@@ -1,12 +1,5 @@
 import {blogsCollection, Post, postsCollection} from "./db";
 
-type Response<T> = {
-    status: 'error' | 'success',
-    data: T | null
-    error: string | null
-    statusCode: number
-}
-
 export const postsRepo = {
     async viewAllPosts() {
         return postsCollection.find().toArray()
