@@ -3,7 +3,6 @@ import {postsRepo} from "../repositories/posts-database";
 import {basicAuth} from "../middleware/auth";
 import {body, CustomValidator} from "express-validator";
 import {inputValidation} from "../middleware/data-validation";
-import {blogsDb} from "../repositories/blogs-memory";
 import {blogsCollection} from "../repositories/db";
 
 export const postsRouter = Router({})
