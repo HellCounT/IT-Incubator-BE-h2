@@ -45,10 +45,10 @@ export const postsRepo = {
         } else return null
     },
     async updatePost(inputId: string, postTitle: string, short: string, text: string, blogId: string) {
-        if (ObjectId.isValid(inputId)) return null
-        const foundBlog = await blogsCollection.findOne({id: blogId})
+        const foundBlog = await blogsCollection.findOne({_id: new ObjectId(blogId)})
         if (!foundBlog) return null
-        const result = await postsCollection.updateOne({_id: new ObjectId(inputId)}, {$set:
+        else {
+            const result = await postsCollection.updateOne({_id: new ObjectId(inputId)}, {$set:
                     {
                         title: postTitle,
                         shortDescription: short,
@@ -56,9 +56,9 @@ export const postsRepo = {
                         blogId: blogId,
                         blogName: foundBlog.name
                     }
-                })
-        return result.matchedCount === 1
-
+            })
+            return result.matchedCount === 1
+        }
     },
     async deletePost(inputId: string) {
         if (ObjectId.isValid(inputId)) {
