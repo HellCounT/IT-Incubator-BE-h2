@@ -1,4 +1,5 @@
 import {Blog, blogsCollection} from "./db";
+import {ObjectId} from "mongodb";
 
 export const blogsRepo = {
     async viewAllBlogs() {
