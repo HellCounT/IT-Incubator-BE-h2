@@ -2,7 +2,15 @@ import {Blog, blogsCollection} from "./db";
 
 export const blogsRepo = {
     async viewAllBlogs() {
-        return blogsCollection.find().toArray()
+        const result = await blogsCollection.find().toArray()
+        const arr = result.map((e) => {
+            e.name = e.name
+            e.id = e.id
+            e.websiteUrl = e.websiteUrl
+            e.description = e.description
+            e.createdAt = e.createdAt
+            })
+        return arr
     },
     async findBlogById(id: string) {
         const foundBlog = await blogsCollection.findOne({id: id})
@@ -19,8 +27,15 @@ export const blogsRepo = {
             websiteUrl: website,
             createdAt: dateNow.toISOString()
         }
-        await blogsCollection.insertOne(newBlog)
-        return newBlog
+        const result = await blogsCollection.insertOne(newBlog)
+        await blogsCollection.updateOne({_id: result.insertedId}, {$set:
+                {
+                    id: result.insertedId.toString()
+                }})
+        return {
+            ...newBlog,
+            id: result.insertedId.toString()
+        }
     },
     async updateBlog(inputId: string, title: string, desc: string, website: string) {
         const result = await blogsCollection.updateOne({id: inputId}, {$set:
