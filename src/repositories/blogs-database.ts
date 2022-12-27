@@ -1,4 +1,5 @@
 import {Blog, blogsCollection} from "./db";
+import {ObjectId} from "mongodb";
 
 export const blogsRepo = {
     async viewAllBlogs() {
@@ -20,7 +21,7 @@ export const blogsRepo = {
             createdAt: dateNow.toISOString()
         }
         const result = await blogsCollection.insertOne(newBlog)
-        newBlog.id = result.insertedId.toString()
+        newBlog.id = (new ObjectId(newBlog.id)).toString()
         return newBlog
     },
     async updateBlog(inputId: string, title: string, desc: string, website: string) {
