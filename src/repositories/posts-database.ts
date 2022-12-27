@@ -45,15 +45,17 @@ export const postsRepo = {
         } else return null
     },
     async updatePost(inputId: string, postTitle: string, short: string, text: string, blogId: string) {
-        if (ObjectId.isValid(inputId)) {
+        if (ObjectId.isValid(inputId) && ObjectId.isValid(blogId)) {
             const foundBlog = await blogsCollection.findOne({id: blogId})
             if (!foundBlog) return null
             const result = await postsCollection.updateOne({_id: new ObjectId(inputId)}, {$set:
-                    {title: postTitle,
+                    {
+                        title: postTitle,
                         shortDescription: short,
                         content: text,
                         blogId: blogId,
-                        blogName: foundBlog.name}
+                        blogName: foundBlog.name
+                    }
             })
             return result.matchedCount === 1
         } else return null
