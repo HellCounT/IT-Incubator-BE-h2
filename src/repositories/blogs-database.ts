@@ -6,7 +6,7 @@ export const blogsRepo = {
         return blogsCollection.find().toArray()
     },
     async findBlogById(id: string) {
-        const foundBlog = await blogsCollection.findOne({_id: id})
+        const foundBlog = await blogsCollection.findOne({id: id})
         if (foundBlog) {
             return foundBlog
         } else return null
@@ -20,8 +20,7 @@ export const blogsRepo = {
             websiteUrl: website,
             createdAt: dateNow.toISOString()
         }
-        const result = await blogsCollection.insertOne(newBlog)
-        newBlog.id = (new ObjectId(newBlog.id)).toString()
+        await blogsCollection.insertOne(newBlog)
         return newBlog
     },
     async updateBlog(inputId: string, title: string, desc: string, website: string) {
