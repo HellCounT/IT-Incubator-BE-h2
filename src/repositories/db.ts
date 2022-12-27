@@ -1,4 +1,4 @@
-import {MongoClient} from "mongodb";
+import {MongoClient, ObjectId, WithId} from "mongodb";
 import dotenv from "dotenv"
 dotenv.config()
 
@@ -12,20 +12,54 @@ console.log(mongoUri)
 export const client = new MongoClient(mongoUri)
 
 export type Blog = {
-    id: string,
     name: string,
     description: string,
     websiteUrl: string
     createdAt: string
 }
 
-export type Post = {
+export type BlogDbType = {
+    _id: ObjectId
+    name: string,
+    description: string,
+    websiteUrl: string
+    createdAt: string
+}
+
+export type BlogViewType = {
     id: string
+    name: string,
+    description: string,
+    websiteUrl: string,
+    createdAt: string
+}
+
+export type Post = {
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string,
+    blogName: string,
+    createdAt: string
+}
+
+export type PostDbType = {
+    _id: ObjectId
     title: string,
     shortDescription: string,
     content: string,
     blogId: string
     blogName: string
+    createdAt: string
+}
+
+export type PostViewType = {
+    id: string
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string,
+    blogName: string,
     createdAt: string
 }
 

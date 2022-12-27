@@ -3,7 +3,8 @@ import {postsRepo} from "../repositories/posts-database";
 import {basicAuth} from "../middleware/auth";
 import {body, CustomValidator} from "express-validator";
 import {inputValidation} from "../middleware/data-validation";
-import {blogsCollection} from "../repositories/db";
+import {blogsCollection, postsCollection} from "../repositories/db";
+import {ObjectId} from "mongodb";
 
 export const postsRouter = Router({})
 
@@ -12,13 +13,13 @@ const titleCheck = body("title").isString().trim().isLength({min: 1, max: 30}).w
 const shortDescriptionCheck = body("shortDescription").isString().trim().isLength({min: 1, max: 100}).withMessage("Short description is invalid")
 const contentCheck = body("content").isString().trim().isLength({min: 1, max: 1000}).withMessage("Content is invalid")
 const isValidBlogId: CustomValidator = async (blogId: string) => {
-    if (await blogsCollection.findOne({id: blogId})) {
+    if (await blogsCollection.findOne({_id: new ObjectId(blogId)})) {
         return true
     } else {
-        throw new Error
+        throw new Error ('Invalid parent blog id')
     }
 }
-const blogIdCheck = body("blogId").exists().isString().custom(isValidBlogId).withMessage('Invalid parent blog id')
+const blogIdCheck = body("blogId").exists().isString().custom(isValidBlogId)
 
 postsRouter.get('/', async (req: Request, res: Response) => {
     res.status(200).send(await postsRepo.viewAllPosts())

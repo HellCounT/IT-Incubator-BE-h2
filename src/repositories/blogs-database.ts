@@ -1,53 +1,58 @@
-import {Blog, blogsCollection} from "./db";
+import {BlogDbType, blogsCollection, Blog, BlogViewType} from "./db";
 import {ObjectId} from "mongodb";
 
+const mapBlogToViewType = (blog: BlogDbType): BlogViewType => {
+    return {
+        id: blog._id.toString(),
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
+        createdAt: blog.createdAt
+    }
+}
+
 export const blogsRepo = {
-    async viewAllBlogs() {
-        const result = await blogsCollection.find().toArray()
-        const arr = result.map((e) => {
-            e.name = e.name
-            e.id = e.id
-            e.websiteUrl = e.websiteUrl
-            e.description = e.description
-            e.createdAt = e.createdAt
-            })
-        return arr
+    async viewAllBlogs(): Promise<BlogViewType[]> {
+        const allBLogs = await blogsCollection.find({}).toArray()
+        return allBLogs.map(b => (mapBlogToViewType(b)))
     },
     async findBlogById(id: string) {
-        const foundBlog = await blogsCollection.findOne({id: id})
-        if (foundBlog) {
-            return foundBlog
+        if (ObjectId.isValid(id)) {
+            const foundBlog = await blogsCollection.findOne({_id: new ObjectId(id)})
+            if (foundBlog) {
+                return mapBlogToViewType(foundBlog)
+            } else return null
         } else return null
     },
-    async createBlog(title: string, desc: string, website: string) {
-        const dateNow = new Date()
+    async createBlog(title: string, desc: string, website: string): Promise<BlogViewType> {
         const newBlog: Blog = {
-            id: (+dateNow).toString(),
             name: title,
             description: desc,
             websiteUrl: website,
-            createdAt: dateNow.toISOString()
+            createdAt: new Date().toISOString()
         }
-        const result = await blogsCollection.insertOne(newBlog)
-        await blogsCollection.updateOne({_id: result.insertedId}, {$set:
-                {
-                    id: result.insertedId.toString()
-                }})
+        const result = await blogsCollection.insertOne({...newBlog})
         return {
-            ...newBlog,
-            id: result.insertedId.toString()
+            id: result.insertedId.toString(),
+            ...newBlog
         }
     },
     async updateBlog(inputId: string, title: string, desc: string, website: string) {
-        const result = await blogsCollection.updateOne({id: inputId}, {$set:
-                    {name: title,
-                    description: desc,
-                    websiteUrl: website}
-            })
-        return result.matchedCount === 1
+        if (ObjectId.isValid(inputId)) {
+            const result = await blogsCollection.updateOne(
+                {_id: new ObjectId(inputId)},
+                {$set: {
+                        name: title,
+                        description: desc,
+                        websiteUrl: website
+                    }})
+            return result.matchedCount === 1
+        } else return null
     },
     async deleteBlog(inputId: string) {
-        const result = await blogsCollection.deleteOne({id: inputId})
-        return result.deletedCount === 1
+        if (ObjectId.isValid(inputId)) {
+            const result = await blogsCollection.deleteOne({_id: new ObjectId(inputId)})
+            return result.deletedCount === 1
+        } else return null
     }
 }
