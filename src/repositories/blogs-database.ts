@@ -7,7 +7,13 @@ export const blogsRepo = {
     async findBlogById(id: string) {
         const foundBlog = await blogsCollection.findOne({id: id})
         if (foundBlog) {
-            return foundBlog
+            return {
+                id: foundBlog._id.toString(),
+                name: foundBlog.name,
+                description: foundBlog.description,
+                websiteUrl: foundBlog.websiteUrl,
+                createdAt: foundBlog.createdAt
+            }
         } else return null
     },
     async createBlog(title: string, desc: string, website: string) {
