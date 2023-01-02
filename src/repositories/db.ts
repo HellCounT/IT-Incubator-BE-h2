@@ -14,20 +14,20 @@ export const client = new MongoClient(mongoUri)
 export type Blog = {
     name: string,
     description: string,
-    websiteUrl: string
-    createdAt: string
+    websiteUrl: string,
+    createdAt: string,
 }
 
 export type BlogDbType = {
     _id: ObjectId
     name: string,
     description: string,
-    websiteUrl: string
-    createdAt: string
+    websiteUrl: string,
+    createdAt: string,
 }
 
 export type BlogViewType = {
-    id: string
+    id: string,
     name: string,
     description: string,
     websiteUrl: string,
@@ -40,7 +40,7 @@ export type Post = {
     content: string,
     blogId: string,
     blogName: string,
-    createdAt: string
+    createdAt: string,
 }
 
 export type PostDbType = {
@@ -48,19 +48,19 @@ export type PostDbType = {
     title: string,
     shortDescription: string,
     content: string,
-    blogId: string
-    blogName: string
-    createdAt: string
+    blogId: string,
+    blogName: string,
+    createdAt: string,
 }
 
 export type PostViewType = {
-    id: string
+    id: string,
     title: string,
     shortDescription: string,
     content: string,
     blogId: string,
     blogName: string,
-    createdAt: string
+    createdAt: string,
 }
 
 export const postsCollection = client.db().collection<Post>('posts')
