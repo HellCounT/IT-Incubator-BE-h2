@@ -63,6 +63,14 @@ export type PostViewType = {
     createdAt: string,
 }
 
+export type PostCreateType = {
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string,
+    createdAt: string,
+}
+
 export const postsCollection = client.db().collection<Post>('posts')
 export const blogsCollection = client.db().collection<Blog>('blogs')
 

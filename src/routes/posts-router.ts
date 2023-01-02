@@ -1,32 +1,16 @@
-import express, {Request, Response, Router} from "express";
-import {postsRepo} from "../repositories/posts-database";
+import {Request, Response, Router} from "express";
 import {basicAuth} from "../middleware/auth";
-import {body, CustomValidator} from "express-validator";
-import {inputValidation} from "../middleware/data-validation";
-import {blogsCollection, postsCollection} from "../repositories/db";
-import {ObjectId} from "mongodb";
+import {postDataValidator, inputValidation} from "../middleware/data-validation";
+import {postsService} from "../domain/posts-service";
 
 export const postsRouter = Router({})
 
-//Validators
-const titleCheck = body("title").isString().trim().isLength({min: 1, max: 30}).withMessage("Title is invalid")
-const shortDescriptionCheck = body("shortDescription").isString().trim().isLength({min: 1, max: 100}).withMessage("Short description is invalid")
-const contentCheck = body("content").isString().trim().isLength({min: 1, max: 1000}).withMessage("Content is invalid")
-const isValidBlogId: CustomValidator = async (blogId: string) => {
-    if (await blogsCollection.findOne({_id: new ObjectId(blogId)})) {
-        return true
-    } else {
-        throw new Error ('Invalid parent blog id')
-    }
-}
-const blogIdCheck = body("blogId").exists().isString().custom(isValidBlogId)
-
 postsRouter.get('/', async (req: Request, res: Response) => {
-    res.status(200).send(await postsRepo.viewAllPosts())
+    res.status(200).send(await postsService.viewAllPosts())
 })
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const postIdSearchResult = await postsRepo.findPostById(req.params.id)
+    const postIdSearchResult = await postsService.findPostById(req.params.id)
     if (postIdSearchResult) {
         res.status(200).send(postIdSearchResult)
     } else {
@@ -36,14 +20,14 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
 
 postsRouter.post('/', basicAuth,
     //Input validation
-    titleCheck,
-    shortDescriptionCheck,
-    contentCheck,
-    blogIdCheck,
+    postDataValidator.titleCheck,
+    postDataValidator.shortDescriptionCheck,
+    postDataValidator.contentCheck,
+    postDataValidator.blogIdCheck,
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
-    const postAddResult = await postsRepo.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+    const postAddResult = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
     if (postAddResult) {
         res.status(201).send(postAddResult)
     } else {
@@ -53,14 +37,14 @@ postsRouter.post('/', basicAuth,
 
 postsRouter.put('/:id', basicAuth,
     //Input validation
-    titleCheck,
-    shortDescriptionCheck,
-    contentCheck,
-    blogIdCheck,
+    postDataValidator.titleCheck,
+    postDataValidator.shortDescriptionCheck,
+    postDataValidator.contentCheck,
+    postDataValidator.blogIdCheck,
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
-    const flagUpdate = await postsRepo.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+    const flagUpdate = await postsService.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
     if (flagUpdate) {
         res.sendStatus(204)
     } else {
@@ -69,7 +53,7 @@ postsRouter.put('/:id', basicAuth,
 })
 
 postsRouter.delete('/:id', basicAuth, async (req: Request, res: Response) => {
-    if (await postsRepo.deletePost(req.params.id)) {
+    if (await postsService.deletePost(req.params.id)) {
         res.sendStatus(204)
     } else {
         res.sendStatus(404)

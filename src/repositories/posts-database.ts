@@ -1,46 +1,30 @@
-import {blogsCollection, Post, PostDbType, postsCollection, PostViewType} from "./db";
+import {blogsCollection, PostCreateType, PostDbType, postsCollection, PostViewType} from "./db";
 import {ObjectId} from "mongodb";
 
-const mapPostToViewType = (post: PostDbType): PostViewType => {
-    return {
-        id: post._id.toString(),
-        title: post.title,
-        shortDescription: post.shortDescription,
-        content: post.content,
-        blogId: post.blogId,
-        blogName: post.blogName,
-        createdAt: post.createdAt
-    }
-}
-
 export const postsRepo = {
-    async viewAllPosts(): Promise<PostViewType[]> {
-        const allPosts = await postsCollection.find({}).toArray()
-        return allPosts.map(p => mapPostToViewType(p))
+    async viewAllPosts(): Promise<PostDbType[]> {
+        return await postsCollection.find({}).toArray()
     },
-    async findPostById(id: string): Promise<PostViewType| null> {
+    async findPostById(id: string): Promise<PostDbType| null> {
         if (ObjectId.isValid(id)) {
-            const foundPost = await postsCollection.findOne({_id: new ObjectId(id)})
-            if (foundPost) {
-                return mapPostToViewType(foundPost)
-            } else return null
+            return postsCollection.findOne({_id: new ObjectId(id)})
         } else return null
     },
-    async createPost(postTitle: string, short: string, text: string, blogId: string): Promise<PostViewType | null> {
-        const foundBlog = await blogsCollection.findOne({_id: new ObjectId(blogId)})
+    async createPost(newPost: PostCreateType): Promise<PostViewType | null> {
+        const foundBlog = await blogsCollection.findOne({_id: new ObjectId(newPost.blogId)})
         if (foundBlog) {
-            const newPost: Post = {
-                title: postTitle,
-                shortDescription: short,
-                content: text,
-                blogId: blogId,
+            const mappedPost = {
+                title: newPost.title,
+                shortDescription: newPost.shortDescription,
+                content: newPost.content,
+                blogId: newPost.blogId,
                 blogName: foundBlog.name,
-                createdAt: new Date().toISOString()
+                createdAt: newPost.createdAt
             }
-            const result = await postsCollection.insertOne({...newPost})
+            const result = await postsCollection.insertOne({...mappedPost})
             return {
                 id: result.insertedId.toString(),
-                ...newPost
+                ...mappedPost
             }
         } else return null
     },
