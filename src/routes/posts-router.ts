@@ -2,15 +2,16 @@ import {Request, Response, Router} from "express";
 import {basicAuth} from "../middleware/auth";
 import {postDataValidator, inputValidation} from "../middleware/data-validation";
 import {postsService} from "../domain/posts-service";
+import {postsQueryRepo} from "../repositories/queryRepo";
 
 export const postsRouter = Router({})
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-    res.status(200).send(await postsService.viewAllPosts())
+    res.status(200).send(await postsQueryRepo.viewAllPosts())
 })
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const postIdSearchResult = await postsService.findPostById(req.params.id)
+    const postIdSearchResult = await postsQueryRepo.findPostById(req.params.id)
     if (postIdSearchResult) {
         res.status(200).send(postIdSearchResult)
     } else {

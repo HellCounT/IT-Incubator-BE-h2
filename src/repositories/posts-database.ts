@@ -1,15 +1,8 @@
-import {blogsCollection, PostCreateType, PostDbType, postsCollection, PostViewType} from "./db";
+import {blogsCollection, PostCreateType, postsCollection} from "./db";
 import {ObjectId} from "mongodb";
+import {PostViewType} from "./queryRepo";
 
 export const postsRepo = {
-    async viewAllPosts(): Promise<PostDbType[]> {
-        return await postsCollection.find({}).toArray()
-    },
-    async findPostById(id: string): Promise<PostDbType| null> {
-        if (ObjectId.isValid(id)) {
-            return postsCollection.findOne({_id: new ObjectId(id)})
-        } else return null
-    },
     async createPost(newPost: PostCreateType): Promise<PostViewType | null> {
         const foundBlog = await blogsCollection.findOne({_id: new ObjectId(newPost.blogId)})
         if (foundBlog) {

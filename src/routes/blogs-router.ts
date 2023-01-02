@@ -1,19 +1,29 @@
 import {Request, Response, Router} from "express";
 import {basicAuth} from "../middleware/auth";
-import {body} from "express-validator";
-import {blogDataValidator, inputValidation} from "../middleware/data-validation";
+import {blogDataValidator, inputValidation, postDataValidator} from "../middleware/data-validation";
 import {blogsService} from "../domain/blogs-service";
+import {blogsQueryRepo, postsQueryRepo} from "../repositories/queryRepo";
+import {postsService} from "../domain/posts-service";
 
 export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    res.status(200).send(await blogsService.viewAllBlogs());
+    res.status(200).send(await blogsQueryRepo.viewAllBlogs());
 })
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
-    const blogIdSearchResult = await blogsService.findBlogById(req.params.id)
+    const blogIdSearchResult = await blogsQueryRepo.findBlogById(req.params.id)
     if (blogIdSearchResult) {
         res.status(200).send(blogIdSearchResult)
+    } else {
+        res.sendStatus(404)
+    }
+})
+
+blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
+    const postsByBlogIdSearchResult = await postsQueryRepo.findPostsByBlogId(req.params.id)
+    if (postsByBlogIdSearchResult) {
+        res.status(200).send(postsByBlogIdSearchResult)
     } else {
         res.sendStatus(404)
     }
@@ -31,6 +41,24 @@ blogsRouter.post('/', basicAuth,
     const blogAddResult = await blogsService.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
     return res.status(201).send(blogAddResult)
 })
+
+blogsRouter.post('/:id/posts', basicAuth,
+    //Input validation
+    postDataValidator.titleCheck,
+    postDataValidator.shortDescriptionCheck,
+    postDataValidator.contentCheck,
+    postDataValidator.blogIdCheck,
+    inputValidation,
+    //Handlers
+    async (req: Request, res: Response) => {
+        const postAddResult = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.params.id)
+        if (postAddResult) {
+            res.status(201).send(postAddResult)
+        } else {
+            res.sendStatus(400)
+        }
+    }
+    )
 
 blogsRouter.put('/:id', basicAuth,
     //Input validation

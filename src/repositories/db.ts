@@ -26,14 +26,6 @@ export type BlogDbType = {
     createdAt: string,
 }
 
-export type BlogViewType = {
-    id: string,
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string
-}
-
 export type Post = {
     title: string,
     shortDescription: string,
@@ -45,16 +37,6 @@ export type Post = {
 
 export type PostDbType = {
     _id: ObjectId
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string,
-}
-
-export type PostViewType = {
-    id: string,
     title: string,
     shortDescription: string,
     content: string,
