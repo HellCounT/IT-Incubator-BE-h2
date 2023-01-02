@@ -1,4 +1,4 @@
-import {MongoClient, ObjectId, WithId} from "mongodb";
+import {MongoClient, ObjectId} from "mongodb";
 import dotenv from "dotenv"
 dotenv.config()
 

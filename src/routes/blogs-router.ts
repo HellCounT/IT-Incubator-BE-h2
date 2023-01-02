@@ -1,8 +1,8 @@
-import express, {Request, Response, Router} from "express";
-import {blogsRepo} from "../repositories/blogs-database";
+import {Request, Response, Router} from "express";
 import {basicAuth} from "../middleware/auth";
 import {body} from "express-validator";
 import {inputValidation} from "../middleware/data-validation";
+import {blogsService} from "../domain/blogs-service";
 
 export const blogsRouter = Router({})
 
@@ -12,11 +12,11 @@ const descriptionCheck = body('description').exists().isString().trim().isLength
 const urlCheck = body('websiteUrl').exists().isString().trim().isLength({min: 1, max: 100}).isURL().withMessage("URL is invalid")
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    res.status(200).send(await blogsRepo.viewAllBlogs());
+    res.status(200).send(await blogsService.viewAllBlogs());
 })
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
-    const blogIdSearchResult = await blogsRepo.findBlogById(req.params.id)
+    const blogIdSearchResult = await blogsService.findBlogById(req.params.id)
     if (blogIdSearchResult) {
         res.status(200).send(blogIdSearchResult)
     } else {
@@ -33,7 +33,7 @@ blogsRouter.post('/', basicAuth,
     //Handlers
     async (req: Request, res: Response) => {
     // Blog adding
-    const blogAddResult = await blogsRepo.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
+    const blogAddResult = await blogsService.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
     return res.status(201).send(blogAddResult)
 })
 
@@ -45,7 +45,7 @@ blogsRouter.put('/:id', basicAuth,
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
-    const flagUpdate = await blogsRepo.updateBlog(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
+    const flagUpdate = await blogsService.updateBlog(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
     if (flagUpdate) {
         res.sendStatus(204)
     } else {
@@ -54,7 +54,7 @@ blogsRouter.put('/:id', basicAuth,
 })
 
 blogsRouter.delete('/:id', basicAuth, async (req: Request, res: Response) => {
-    if (await blogsRepo.deleteBlog(req.params.id)) {
+    if (await blogsService.deleteBlog(req.params.id)) {
         res.sendStatus(204)
     } else {
         res.sendStatus(404)

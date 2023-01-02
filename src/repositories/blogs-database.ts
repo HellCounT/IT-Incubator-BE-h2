@@ -1,41 +1,17 @@
 import {BlogDbType, blogsCollection, Blog, BlogViewType} from "./db";
-import {ObjectId} from "mongodb";
-
-const mapBlogToViewType = (blog: BlogDbType): BlogViewType => {
-    return {
-        id: blog._id.toString(),
-        name: blog.name,
-        description: blog.description,
-        websiteUrl: blog.websiteUrl,
-        createdAt: blog.createdAt
-    }
-}
+import {InsertOneResult, ObjectId} from "mongodb";
 
 export const blogsRepo = {
-    async viewAllBlogs(): Promise<BlogViewType[]> {
-        const allBLogs = await blogsCollection.find({}).toArray()
-        return allBLogs.map(b => (mapBlogToViewType(b)))
+    async viewAllBlogs(): Promise<BlogDbType[]> {
+        return await blogsCollection.find({}).toArray()
     },
-    async findBlogById(id: string) {
+    async findBlogById(id: string): Promise<BlogDbType | null> {
         if (ObjectId.isValid(id)) {
-            const foundBlog = await blogsCollection.findOne({_id: new ObjectId(id)})
-            if (foundBlog) {
-                return mapBlogToViewType(foundBlog)
-            } else return null
+            return await blogsCollection.findOne({_id: new ObjectId(id)})
         } else return null
     },
-    async createBlog(title: string, desc: string, website: string): Promise<BlogViewType> {
-        const newBlog: Blog = {
-            name: title,
-            description: desc,
-            websiteUrl: website,
-            createdAt: new Date().toISOString()
-        }
-        const result = await blogsCollection.insertOne({...newBlog})
-        return {
-            id: result.insertedId.toString(),
-            ...newBlog
-        }
+    async createBlog(newBlog: Blog): Promise<InsertOneResult> {
+        return await blogsCollection.insertOne({...newBlog})
     },
     async updateBlog(inputId: string, title: string, desc: string, website: string) {
         if (ObjectId.isValid(inputId)) {
