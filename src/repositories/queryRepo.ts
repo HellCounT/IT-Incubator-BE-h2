@@ -1,4 +1,4 @@
-import {Blog, BlogDbType, blogsCollection, Post, PostDbType, postsCollection} from "./db";
+import {Blog, BlogDbType, blogsCollection, PostDbType, postsCollection} from "./db";
 import {Filter, ObjectId} from "mongodb";
 
 export type BlogViewType = {
@@ -51,7 +51,7 @@ export const blogsQueryRepo = {
             .find(filter)
             .sort({[q.sortBy]: q.sortDirection})
             .skip((q.pageNumber - 1) * q.pageSize)
-            .limit(q.pageNumber * q.pageSize)
+            .limit(q.pageSize)
             .toArray()
         const pageBlogs = reqPageDbBlogs.map(b => (blogsQueryRepo._mapBlogToViewType(b)))
         return {
@@ -87,7 +87,7 @@ export const postsQueryRepo = {
         const reqPageDbPosts = await postsCollection.find()
             .sort({[q.sortBy]: q.sortDirection})
             .skip((q.pageNumber - 1) * q.pageSize)
-            .limit(q.pageNumber * q.pageSize)
+            .limit(q.pageSize)
             .toArray()
         const pagePosts = reqPageDbPosts.map(p => postsQueryRepo._mapPostToViewType(p))
         return {
@@ -114,7 +114,7 @@ export const postsQueryRepo = {
                 const reqPageDbPosts = await postsCollection.find({blogId: {$eq: id}})
                     .sort({[q.sortBy]: q.sortDirection})
                     .skip((q.pageNumber - 1) * q.pageSize)
-                    .limit(q.pageNumber * q.pageSize)
+                    .limit(q.pageSize)
                     .toArray()
                 if (!reqPageDbPosts) return null
                 else {
