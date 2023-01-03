@@ -81,7 +81,7 @@ blogsRouter.post('/:id/posts', basicAuth,
         if (postAddResult) {
             res.status(201).send(postAddResult)
         } else {
-            res.sendStatus(400)
+            res.sendStatus(404)
         }
     }
 )
