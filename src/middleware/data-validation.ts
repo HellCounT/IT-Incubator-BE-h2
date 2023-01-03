@@ -44,3 +44,12 @@ export const inputValidation = (req: Request, res: Response, next: NextFunction)
         next()
     }
 }
+
+export const BlogIdInputValidation = (req: Request, res: Response, next: NextFunction) => {
+    const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
+    if (errorMessagesArray.length > 0) {
+        res.sendStatus(404)
+    } else {
+        next()
+    }
+}
