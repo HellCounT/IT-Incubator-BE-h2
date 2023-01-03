@@ -16,18 +16,10 @@ export const blogDataValidator = {
     urlCheck: body('websiteUrl').exists().isString().trim().isLength({min: 1, max: 100}).isURL().withMessage("URL is invalid")
 }
 export const postDataValidator = {
-    titleCheck() {
-        body("title").isString().trim().isLength({min: 1, max: 30}).withMessage("Title is invalid")
-    },
-    shortDescriptionCheck () {
-        body("shortDescription").isString().trim().isLength({min: 1, max: 100}).withMessage("Short description is invalid")
-    },
-    contentCheck () {
-        body("content").isString().trim().isLength({min: 1, max: 1000}).withMessage("Content is invalid")
-    },
-    blogIdCheck() {
-        body("blogId").exists().isString().custom(isValidBlogId)
-    }
+    titleCheck: body("title").isString().trim().isLength({min: 1, max: 30}).withMessage("Title is invalid"),
+    shortDescriptionCheck: body("shortDescription").isString().trim().isLength({min: 1, max: 100}).withMessage("Short description is invalid"),
+    contentCheck: body("content").isString().trim().isLength({min: 1, max: 1000}).withMessage("Content is invalid"),
+    blogIdCheck: body("blogId").exists().isString().custom(isValidBlogId)
 }
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
