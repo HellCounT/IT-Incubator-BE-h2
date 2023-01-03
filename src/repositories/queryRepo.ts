@@ -1,5 +1,5 @@
-import {Blog, BlogDbType, blogsCollection, PostDbType, postsCollection} from "./db";
-import {Filter, ObjectId} from "mongodb";
+import {BlogDbType, blogsCollection, PostDbType, postsCollection} from "./db";
+import {ObjectId} from "mongodb";
 
 export type BlogViewType = {
     id: string,
@@ -42,13 +42,11 @@ export type QueryParser = {
 
 export const blogsQueryRepo = {
     async viewAllBlogs(q: QueryParser): Promise<BlogPaginatorType> {
-        const filter: Filter<Blog> = {}
-        if (q.searchNameTerm) {
-            filter.name = q.searchNameTerm
-        }
-        const allBlogsCount = await blogsCollection.countDocuments(filter)
+        let filter: string = ""
+        if (q.searchNameTerm) filter = ".*" + q.searchNameTerm+ ".*"
+        const allBlogsCount = await blogsCollection.countDocuments({"name": {$regex: filter, $options: 'i'}})
         const reqPageDbBlogs = await blogsCollection
-            .find(filter)
+            .find({"name": {$regex: filter, $options: 'i'}})
             .sort({[q.sortBy]: q.sortDirection})
             .skip((q.pageNumber - 1) * q.pageSize)
             .limit(q.pageSize)
