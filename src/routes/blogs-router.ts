@@ -35,7 +35,12 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
     }
 })
 
-blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
+blogsRouter.get('/:id/posts',
+    //InputValidation
+    postDataValidator.blogIdParamCheck,
+    inputValidation,
+    //Handlers
+    async (req: Request, res: Response) => {
     let queryParams: QueryParser = {
         searchNameTerm: null,
         sortBy: "createdAt",
@@ -73,7 +78,7 @@ blogsRouter.post('/:id/posts', basicAuth,
     postDataValidator.titleCheck,
     postDataValidator.shortDescriptionCheck,
     postDataValidator.contentCheck,
-    postDataValidator.blogIdCheck,
+    postDataValidator.blogIdParamCheck,
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
@@ -81,7 +86,7 @@ blogsRouter.post('/:id/posts', basicAuth,
         if (postAddResult) {
             res.status(201).send(postAddResult)
         } else {
-            res.sendStatus(404)
+            res.sendStatus(400)
         }
     }
 )

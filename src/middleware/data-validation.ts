@@ -1,10 +1,18 @@
 import {NextFunction, Request, Response} from "express";
-import {body, CustomValidator, validationResult} from "express-validator";
+import {body, CustomValidator, param, validationResult} from "express-validator";
 import {blogsCollection} from "../repositories/db";
 import {ObjectId} from "mongodb";
 
 const isValidBlogId: CustomValidator = async (blogId: string) => {
     if (await blogsCollection.findOne({_id: new ObjectId(blogId)})) {
+        return true
+    } else {
+        throw new Error ('Invalid parent blog id')
+    }
+}
+
+const isValidBlogIdParam: CustomValidator = async (id: string) => {
+    if (await blogsCollection.findOne({_id: new ObjectId(id)})) {
         return true
     } else {
         throw new Error ('Invalid parent blog id')
@@ -19,7 +27,8 @@ export const postDataValidator = {
     titleCheck: body("title").isString().trim().isLength({min: 1, max: 30}).withMessage("Title is invalid"),
     shortDescriptionCheck: body("shortDescription").isString().trim().isLength({min: 1, max: 100}).withMessage("Short description is invalid"),
     contentCheck: body("content").isString().trim().isLength({min: 1, max: 1000}).withMessage("Content is invalid"),
-    blogIdCheck: body("blogId").exists().isString().custom(isValidBlogId)
+    blogIdCheck: body("blogId").exists().isString().custom(isValidBlogId),
+    blogIdParamCheck: param('id').exists().isString().custom(isValidBlogIdParam)
 }
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
