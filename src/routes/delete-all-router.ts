@@ -3,7 +3,7 @@ import {blogsCollection, postsCollection} from "../repositories/db";
 
 export const deleteAllRouter = Router({})
 
-deleteAllRouter.delete('/', async (req: Request, res: Response) => {
+deleteAllRouter.delete('/all-data', async (req: Request, res: Response) => {
     await blogsCollection.deleteMany({})
     await postsCollection.deleteMany({})
     res.sendStatus(204)

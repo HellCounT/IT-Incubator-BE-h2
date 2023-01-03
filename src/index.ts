@@ -11,7 +11,7 @@ app.use(express.json())
 
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
-app.use('/testing/all-data', deleteAllRouter)
+app.use('/testing', deleteAllRouter)
 
 const startApp = async () => {
     await runDb()

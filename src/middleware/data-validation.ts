@@ -11,15 +11,9 @@ const isValidBlogId: CustomValidator = async (blogId: string) => {
     }
 }
 export const blogDataValidator = {
-    nameCheck() {
-        body('name').exists().isString().trim().isLength({min: 1, max: 15}).withMessage("Name is invalid")
-    },
-    descriptionCheck() {
-        body('description').exists().isString().trim().isLength({min: 1, max: 500}).withMessage("Description is invalid")
-    },
-    urlCheck() {
-        body('websiteUrl').exists().isString().trim().isLength({min: 1, max: 100}).isURL().withMessage("URL is invalid")
-    }
+    nameCheck: body('name').exists().isString().trim().isLength({min: 1, max: 15}).withMessage("Name is invalid"),
+    descriptionCheck: body('description').exists().isString().trim().isLength({min: 1, max: 500}).withMessage("Description is invalid"),
+    urlCheck: body('websiteUrl').exists().isString().trim().isLength({min: 1, max: 100}).isURL().withMessage("URL is invalid")
 }
 export const postDataValidator = {
     titleCheck() {
