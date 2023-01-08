@@ -16,7 +16,9 @@ export const usersRepo = {
         const result = await usersCollection.insertOne({...insertDbUser})
         return {
             id: result.insertedId.toString(),
-            ...insertDbUser
+            login: insertDbUser.login,
+            email: insertDbUser.email,
+            createdAt: insertDbUser.createdAt
         }
     },
     async deleteUser(id: string): Promise<boolean | null> {
