@@ -19,13 +19,12 @@ export const usersService = {
         return await usersRepo.deleteUser(id)
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise<boolean> {
-        const user: WithId<UserInsertDbType> | null = await usersRepo.findByLoginOrEmail(loginOrEmail)
-        if (!user) return false
-        else {
+        const foundUser: WithId<UserInsertDbType> | null = await usersRepo.findByLoginOrEmail(loginOrEmail)
+        if (foundUser) {
+            const userHash = foundUser.hash
             const passwordHash = await usersService._generateHash(password)
-            return user.hash === passwordHash;
-        }
-
+            return userHash === passwordHash
+        } else return false
     },
     async _generateHash(password: string) {
         return await bcrypt.hash(password, await bcrypt.genSalt(10))

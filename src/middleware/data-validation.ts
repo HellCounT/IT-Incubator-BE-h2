@@ -36,7 +36,6 @@ export const userDataValidator = {
     passwordCheck: body('password').isString().trim().isLength({min: 6, max: 20}).withMessage("Password is invalid"),
     emailCheck: body('email').isString().notEmpty().isEmail().withMessage("Email is invalid"),
     loginOrEmailCheck: body('loginOrEmail').isString().trim().notEmpty().withMessage("Login/email is invalid")
-        //body('loginOrEmail').isString().notEmpty().matches(/^[a-zA-Z0-9_-]*$/ || /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage("Login/email is invalid"),
 }
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
