@@ -166,7 +166,7 @@ export const usersQueryRepo = {
         let loginFilter: string = ""
         let emailFilter: string = ""
         if (q.searchLoginTerm) loginFilter = ".*" + q.searchLoginTerm+ ".*"
-        if (q.searchEmailTerm) emailFilter = ".*" + q.searchLoginTerm+ ".*"
+        if (q.searchEmailTerm) emailFilter = ".*" + q.searchEmailTerm+ ".*"
         const allUsersCount = await usersCollection.countDocuments(
             {"login": {$regex: loginFilter, $options: 'i'},
             "email": {$regex: emailFilter, $options: 'i'}}
