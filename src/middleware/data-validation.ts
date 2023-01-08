@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {body, CustomValidator, oneOf, param, validationResult} from "express-validator";
+import {body, CustomValidator, param, validationResult} from "express-validator";
 import {blogsCollection} from "../repositories/db";
 import {ObjectId} from "mongodb";
 
@@ -35,10 +35,7 @@ export const userDataValidator = {
     loginCheck: body('login').isString().trim().isLength({min: 3, max: 10}).matches(/^[a-zA-Z0-9_-]*$/).withMessage("Login is invalid"),
     passwordCheck: body('password').isString().trim().isLength({min: 6, max: 20}).withMessage("Password is invalid"),
     emailCheck: body('email').isString().notEmpty().isEmail().withMessage("Email is invalid"),
-    loginOrEmailCheck: oneOf([
-        body('loginOrEmail').isString().trim().isLength({min: 3, max: 10}).matches(/^[a-zA-Z0-9_-]*$/).withMessage("Login is invalid"),
-        body('email').isString().notEmpty().isEmail().withMessage("Email is invalid")
-    ])
+    loginOrEmailCheck: body('loginOrEmail').isString().trim().notEmpty().withMessage("Login/email is invalid")
         //body('loginOrEmail').isString().notEmpty().matches(/^[a-zA-Z0-9_-]*$/ || /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage("Login/email is invalid"),
 }
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {
