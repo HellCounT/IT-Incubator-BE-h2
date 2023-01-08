@@ -64,7 +64,7 @@ export type UserQueryParser = {
 export const blogsQueryRepo = {
     async viewAllBlogs(q: QueryParser): Promise<BlogPaginatorType> {
         let filter: string = ""
-        if (q.searchNameTerm) filter = ".*" + q.searchNameTerm+ ".*"
+        if (q.searchNameTerm) filter = ".*" + q.searchNameTerm + ".*"
         const allBlogsCount = await blogsCollection.countDocuments({"name": {$regex: filter, $options: 'i'}})
         const reqPageDbBlogs = await blogsCollection
             .find({"name": {$regex: filter, $options: 'i'}})
@@ -158,18 +158,19 @@ export const postsQueryRepo = {
             blogId: post.blogId,
             blogName: post.blogName,
             createdAt: post.createdAt
-        }}
+        }
+    }
 }
 
 export const usersQueryRepo = {
     async viewAllUsers(q: UserQueryParser): Promise<UserPaginatorType> {
         let loginFilter: string = ""
         let emailFilter: string = ""
-        if (q.searchLoginTerm) loginFilter = ".*" + q.searchLoginTerm+ ".*"
-        if (q.searchEmailTerm) emailFilter = ".*" + q.searchEmailTerm+ ".*"
+        if (q.searchLoginTerm) loginFilter = ".*" + q.searchLoginTerm + ".*"
+        if (q.searchEmailTerm) emailFilter = ".*" + q.searchEmailTerm + ".*"
         const allUsersCount = await usersCollection.countDocuments(
             {
-                $or : [
+                $or: [
                     {login: {$regex: loginFilter, $options: 'i'}},
                     {email: {$regex: emailFilter, $options: 'i'}}
                 ]
@@ -178,7 +179,7 @@ export const usersQueryRepo = {
         const reqPageDbUsers = await usersCollection
             .find(
                 {
-                    $or : [
+                    $or: [
                         {login: {$regex: loginFilter, $options: 'i'}},
                         {email: {$regex: emailFilter, $options: 'i'}}
                     ]

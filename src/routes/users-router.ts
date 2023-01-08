@@ -17,6 +17,7 @@ usersRouter.get('/', basicAuth, async (req: Request, res: Response) => {
         searchLoginTerm: null
     }
     if (req.query.searchLoginTerm) queryParams.searchLoginTerm = req.query.searchLoginTerm.toString()
+    if (req.query.searchEmailTerm) queryParams.searchEmailTerm = req.query.searchEmailTerm.toString()
     if (req.query.sortBy) queryParams.sortBy = req.query.sortBy.toString()
     if (req.query.sortDirection && req.query.sortDirection.toString() === "asc") queryParams.sortDirection = 1
     if (req.query.pageNumber) queryParams.pageNumber = +req.query.pageNumber
