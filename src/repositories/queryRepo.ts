@@ -170,7 +170,7 @@ export const usersQueryRepo = {
         const allUsersCount = await usersCollection.countDocuments(
             {
                 $or : [
-                {login: {$regex: loginFilter, $options: 'i'}},
+                    {login: {$regex: loginFilter, $options: 'i'}},
                     {email: {$regex: emailFilter, $options: 'i'}}
                 ]
             }
