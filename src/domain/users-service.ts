@@ -1,8 +1,7 @@
 import {UserViewType} from "../repositories/queryRepo";
-import {UserCreateType, UserInsertDbType} from "../repositories/db";
+import {UserCreateType} from "../repositories/db";
 import bcrypt from 'bcrypt'
 import {usersRepo} from "../repositories/users-database";
-import {WithId} from "mongodb";
 
 export const usersService = {
     async createUser(login: string, password: string, email: string): Promise<UserViewType> {
@@ -19,14 +18,16 @@ export const usersService = {
         return await usersRepo.deleteUser(id)
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise<boolean> {
-        const foundUser: WithId<UserInsertDbType> | null = await usersRepo.findByLoginOrEmail(loginOrEmail)
-        if (foundUser) {
+        const foundUser = await usersRepo.findByLoginOrEmail(loginOrEmail)
+        if (!foundUser) return false
+        else {
             const userHash = foundUser.hash
             const passwordHash = await usersService._generateHash(password)
             return userHash === passwordHash
-        } else return false
+        }
     },
     async _generateHash(password: string) {
-        return await bcrypt.hash(password, await bcrypt.genSalt(10))
+        const salt = await bcrypt.genSalt(10)
+        return await bcrypt.hash(password, salt)
     }
 }
