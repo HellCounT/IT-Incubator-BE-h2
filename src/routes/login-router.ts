@@ -4,7 +4,7 @@ import {inputValidation, userDataValidator} from "../middleware/data-validation"
 
 export const loginRouter = Router({})
 
-loginRouter.post('/auth',
+loginRouter.post('/login',
     userDataValidator.passwordCheck,
     userDataValidator.loginOrEmailCheck,
     inputValidation,
