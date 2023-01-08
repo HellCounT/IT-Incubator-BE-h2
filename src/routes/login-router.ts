@@ -10,6 +10,6 @@ loginRouter.post('/login',
     inputValidation,
     async (req: Request, res: Response) => {
     const checkResult = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
-    if (!checkResult) res.sendStatus(401)
-    else res.sendStatus(204)
+    if (checkResult) res.sendStatus(204)
+    else res.sendStatus(401)
 })

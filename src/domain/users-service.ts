@@ -5,7 +5,7 @@ import {usersRepo} from "../repositories/users-database";
 
 export const usersService = {
     async createUser(login: string, password: string, email: string): Promise<UserViewType> {
-        const passwordHash = await this._generateHash(password)
+        const passwordHash = await usersService._generateHash(password)
         const newUser: UserCreateType = {
             login: login,
             password: password,
