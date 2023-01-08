@@ -8,4 +8,3 @@ deleteAllRouter.delete('/all-data', async (req: Request, res: Response) => {
     await postsCollection.deleteMany({})
     res.sendStatus(204)
 })
-

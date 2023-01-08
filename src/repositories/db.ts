@@ -17,7 +17,6 @@ export type Blog = {
     websiteUrl: string,
     createdAt: string,
 }
-
 export type BlogDbType = {
     _id: ObjectId
     name: string,
@@ -25,7 +24,6 @@ export type BlogDbType = {
     websiteUrl: string,
     createdAt: string,
 }
-
 export type Post = {
     title: string,
     shortDescription: string,
@@ -34,7 +32,6 @@ export type Post = {
     blogName: string,
     createdAt: string,
 }
-
 export type PostDbType = {
     _id: ObjectId
     title: string,
@@ -44,7 +41,6 @@ export type PostDbType = {
     blogName: string,
     createdAt: string,
 }
-
 export type PostCreateType = {
     title: string,
     shortDescription: string,
@@ -52,9 +48,22 @@ export type PostCreateType = {
     blogId: string,
     createdAt: string,
 }
+export type UserInsertDbType = {
+    login: string,
+    email: string,
+    hash: string,
+    createdAt: string
+}
+export type UserCreateType = {
+    login: string,
+    password: string,
+    email: string,
+    createdAt: string
+}
 
 export const postsCollection = client.db().collection<Post>('posts')
 export const blogsCollection = client.db().collection<Blog>('blogs')
+export const usersCollection = client.db().collection<UserInsertDbType>('users')
 
 export const runDb = async() => {
     try {

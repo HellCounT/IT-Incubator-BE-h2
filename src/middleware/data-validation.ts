@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {body, CustomValidator, param, validationResult} from "express-validator";
+import {body, CustomValidator, oneOf, param, validationResult} from "express-validator";
 import {blogsCollection} from "../repositories/db";
 import {ObjectId} from "mongodb";
 
@@ -30,6 +30,17 @@ export const postDataValidator = {
     blogIdCheck: body("blogId").exists().isString().custom(isValidBlogId),
     blogIdParamCheck: param('id').exists().isString().custom(isValidBlogIdParam)
 }
+
+export const userDataValidator = {
+    loginCheck: body('login').isString().trim().isLength({min: 3, max: 10}).matches(/^[a-zA-Z0-9_-]*$/).withMessage("Login is invalid"),
+    passwordCheck: body('password').isString().trim().isLength({min: 6, max: 20}).withMessage("Password is invalid"),
+    emailCheck: body('email').isString().notEmpty().isEmail().withMessage("Email is invalid"),
+    loginOrEmailCheck: oneOf([
+        body('loginOrEmail').isString().trim().isLength({min: 3, max: 10}).matches(/^[a-zA-Z0-9_-]*$/).withMessage("Login is invalid"),
+        body('email').isString().notEmpty().isEmail().withMessage("Email is invalid")
+    ])
+        //body('loginOrEmail').isString().notEmpty().matches(/^[a-zA-Z0-9_-]*$/ || /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage("Login/email is invalid"),
+}
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
     if (errorMessagesArray.length > 0) {
@@ -45,7 +56,7 @@ export const inputValidation = (req: Request, res: Response, next: NextFunction)
     }
 }
 
-export const BlogIdInputValidation = (req: Request, res: Response, next: NextFunction) => {
+export const blogIdInputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
     if (errorMessagesArray.length > 0) {
         res.sendStatus(404)

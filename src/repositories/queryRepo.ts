@@ -1,5 +1,5 @@
-import {BlogDbType, blogsCollection, PostDbType, postsCollection} from "./db";
-import {ObjectId} from "mongodb";
+import {BlogDbType, blogsCollection, PostDbType, postsCollection, UserInsertDbType, usersCollection} from "./db";
+import {ObjectId, WithId} from "mongodb";
 
 export type BlogViewType = {
     id: string,
@@ -17,6 +17,12 @@ export type PostViewType = {
     blogName: string,
     createdAt: string,
 }
+export type UserViewType = {
+    id: string,
+    login: string,
+    email: string,
+    createdAt: string
+}
 export type BlogPaginatorType = {
     pagesCount: number,
     page: number,
@@ -31,6 +37,13 @@ export type PostPaginatorType = {
     totalCount: number,
     items: PostViewType[]
 }
+export type UserPaginatorType = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: UserViewType[]
+}
 
 export type QueryParser = {
     searchNameTerm: string | null,
@@ -38,6 +51,14 @@ export type QueryParser = {
     sortDirection: 1 | -1
     pageNumber: number
     pageSize: number
+}
+export type UserQueryParser = {
+    sortBy: string,
+    sortDirection: 1 | -1,
+    pageNumber: number,
+    pageSize: number,
+    searchLoginTerm: string | null,
+    searchEmailTerm: string | null
 }
 
 export const blogsQueryRepo = {
@@ -138,4 +159,42 @@ export const postsQueryRepo = {
             blogName: post.blogName,
             createdAt: post.createdAt
         }}
+}
+
+export const usersQueryRepo = {
+    async viewAllUsers(q: UserQueryParser): Promise<UserPaginatorType> {
+        let loginFilter: string = ""
+        let emailFilter: string = ""
+        if (q.searchLoginTerm) loginFilter = ".*" + q.searchLoginTerm+ ".*"
+        if (q.searchEmailTerm) emailFilter = ".*" + q.searchLoginTerm+ ".*"
+        const allUsersCount = await usersCollection.countDocuments(
+            {"login": {$regex: loginFilter, $options: 'i'},
+            "email": {$regex: emailFilter, $options: 'i'}}
+            )
+        const reqPageDbUsers = await usersCollection
+            .find(
+                {"login": {$regex: loginFilter, $options: 'i'},
+                    "email": {$regex: emailFilter, $options: 'i'}}
+            )
+            .sort({[q.sortBy]: q.sortDirection})
+            .skip((q.pageNumber - 1) * q.pageSize)
+            .limit(q.pageSize)
+            .toArray()
+        const pageUsers = reqPageDbUsers.map(u => (usersQueryRepo._mapUserToViewType(u)))
+        return {
+            pagesCount: Math.ceil(allUsersCount / q.pageSize),
+            page: q.pageNumber,
+            pageSize: q.pageSize,
+            totalCount: allUsersCount,
+            items: pageUsers
+        }
+    },
+    _mapUserToViewType(user: WithId<UserInsertDbType>): UserViewType {
+        return {
+            id: user._id.toString(),
+            login: user.login,
+            email: user.email,
+            createdAt: user.createdAt
+        }
+    }
 }
