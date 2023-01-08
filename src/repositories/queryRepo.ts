@@ -168,13 +168,21 @@ export const usersQueryRepo = {
         if (q.searchLoginTerm) loginFilter = ".*" + q.searchLoginTerm+ ".*"
         if (q.searchEmailTerm) emailFilter = ".*" + q.searchEmailTerm+ ".*"
         const allUsersCount = await usersCollection.countDocuments(
-            {"login": {$regex: loginFilter, $options: 'i'},
-            "email": {$regex: emailFilter, $options: 'i'}}
-            )
+            {
+                $or : [
+                {login: {$regex: loginFilter, $options: 'i'}},
+                    {email: {$regex: emailFilter, $options: 'i'}}
+                ]
+            }
+        )
         const reqPageDbUsers = await usersCollection
             .find(
-                {"login": {$regex: loginFilter, $options: 'i'},
-                    "email": {$regex: emailFilter, $options: 'i'}}
+                {
+                    $or : [
+                        {login: {$regex: loginFilter, $options: 'i'}},
+                        {email: {$regex: emailFilter, $options: 'i'}}
+                    ]
+                }
             )
             .sort({[q.sortBy]: q.sortDirection})
             .skip((q.pageNumber - 1) * q.pageSize)
