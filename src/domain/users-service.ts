@@ -19,11 +19,12 @@ export const usersService = {
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise<boolean> {
         const foundUser = await usersRepo.findByLoginOrEmail(loginOrEmail)
+        console.log("foundUser", foundUser)
         if (!foundUser) return false
         else {
             const userHash = foundUser.hash
-            const passwordHash = await usersService._generateHash(password)
-            return userHash === passwordHash
+          //const passwordHash = await usersService._generateHash(password)
+            return await bcrypt.compare(password,userHash)
         }
     },
     async _generateHash(password: string) {
