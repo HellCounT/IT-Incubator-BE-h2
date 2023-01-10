@@ -1,5 +1,5 @@
 import {commentsRepo} from "../repositories/comments-database";
-import {CommentCreateType, CommentInsertDbType} from "../repositories/types";
+import {CommentCreateType} from "../repositories/types";
 
 export const commentsService = {
     async createComment(postId: string, userId: string, content: string) {

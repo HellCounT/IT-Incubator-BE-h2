@@ -9,7 +9,6 @@ import {
     PostViewType,
     QueryParser, UserInsertDbType, UserPaginatorType, UserQueryParser, UserViewType
 } from "./types";
-import {commentsRepo} from "./comments-database";
 
 export const blogsQueryRepo = {
     async viewAllBlogs(q: QueryParser): Promise<BlogPaginatorType> {
