@@ -2,13 +2,14 @@ import {Request, Response, Router} from "express";
 import {basicAuth} from "../middleware/auth";
 import {
     blogDataValidator,
-    blogIdInputValidation,
+    paramIdInputValidation,
     inputValidation,
     postDataValidator
 } from "../middleware/data-validation";
 import {blogsService} from "../domain/blogs-service";
-import {blogsQueryRepo, postsQueryRepo, QueryParser} from "../repositories/queryRepo";
+import {blogsQueryRepo, postsQueryRepo} from "../repositories/queryRepo";
 import {postsService} from "../domain/posts-service";
+import {QueryParser} from "../repositories/types";
 
 export const blogsRouter = Router({})
 
@@ -43,7 +44,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 blogsRouter.get('/:id/posts',
     //InputValidation
     postDataValidator.blogIdParamCheck,
-    blogIdInputValidation,
+    paramIdInputValidation,
     //Handlers
     async (req: Request, res: Response) => {
     let queryParams: QueryParser = {
@@ -81,7 +82,7 @@ blogsRouter.post('/', basicAuth,
 blogsRouter.post('/:id/posts', basicAuth,
     //Input validation
     postDataValidator.blogIdParamCheck,
-    blogIdInputValidation,
+    paramIdInputValidation,
     postDataValidator.titleCheck,
     postDataValidator.shortDescriptionCheck,
     postDataValidator.contentCheck,

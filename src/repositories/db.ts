@@ -1,5 +1,6 @@
-import {MongoClient, ObjectId} from "mongodb";
+import {MongoClient} from "mongodb";
 import dotenv from "dotenv"
+import {Blog, CommentInsertDbType, Post, UserInsertDbType} from "./types";
 dotenv.config()
 
 const mongoUri = process.env.MONGO_URL
@@ -11,59 +12,10 @@ if (!mongoUri) {
 console.log(mongoUri)
 export const client = new MongoClient(mongoUri)
 
-export type Blog = {
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string,
-}
-export type BlogDbType = {
-    _id: ObjectId
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string,
-}
-export type Post = {
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string,
-}
-export type PostDbType = {
-    _id: ObjectId
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string,
-}
-export type PostCreateType = {
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    createdAt: string,
-}
-export type UserInsertDbType = {
-    login: string,
-    email: string,
-    hash: string,
-    createdAt: string
-}
-export type UserCreateType = {
-    login: string,
-    password: string,
-    email: string,
-    createdAt: string
-}
-
 export const postsCollection = client.db().collection<Post>('posts')
 export const blogsCollection = client.db().collection<Blog>('blogs')
 export const usersCollection = client.db().collection<UserInsertDbType>('users')
+export const commentsCollection = client.db().collection<CommentInsertDbType>('comments')
 
 export const runDb = async() => {
     try {

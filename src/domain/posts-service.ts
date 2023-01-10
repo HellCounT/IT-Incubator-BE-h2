@@ -1,6 +1,5 @@
-import {PostCreateType} from "../repositories/db";
 import {postsRepo} from "../repositories/posts-database";
-import {PostViewType} from "../repositories/queryRepo";
+import {PostCreateType, PostViewType} from "../repositories/types";
 
 export const postsService = {
     async createPost(postTitle: string, short: string, text: string, blogId: string): Promise<PostViewType | null> {

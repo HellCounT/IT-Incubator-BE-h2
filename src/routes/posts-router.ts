@@ -2,7 +2,8 @@ import {Request, Response, Router} from "express";
 import {basicAuth} from "../middleware/auth";
 import {postDataValidator, inputValidation} from "../middleware/data-validation";
 import {postsService} from "../domain/posts-service";
-import {postsQueryRepo, QueryParser} from "../repositories/queryRepo";
+import {postsQueryRepo} from "../repositories/queryRepo";
+import {QueryParser} from "../repositories/types";
 
 export const postsRouter = Router({})
 

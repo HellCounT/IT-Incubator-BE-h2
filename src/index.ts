@@ -5,6 +5,7 @@ import {deleteAllRouter} from "./routes/delete-all-router";
 import {runDb} from "./repositories/db";
 import {usersRouter} from "./routes/users-router";
 import {loginRouter} from "./routes/login-router";
+import {commentsRouter} from "./routes/comments-router";
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -16,6 +17,7 @@ app.use('/posts', postsRouter)
 app.use('/testing', deleteAllRouter)
 app.use('/users', usersRouter)
 app.use('/auth', loginRouter)
+app.use('/comments', commentsRouter)
 
 const startApp = async () => {
     await runDb()

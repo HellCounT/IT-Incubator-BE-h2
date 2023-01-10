@@ -1,8 +1,9 @@
 import {Request, Response, Router} from "express";
-import {UserQueryParser, usersQueryRepo} from "../repositories/queryRepo";
+import {usersQueryRepo} from "../repositories/queryRepo";
 import {inputValidation, userDataValidator} from "../middleware/data-validation";
 import {usersService} from "../domain/users-service";
 import {basicAuth} from "../middleware/auth";
+import {UserQueryParser} from "../repositories/types";
 
 export const usersRouter = Router({})
 

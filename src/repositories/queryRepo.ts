@@ -1,65 +1,15 @@
-import {BlogDbType, blogsCollection, PostDbType, postsCollection, UserInsertDbType, usersCollection} from "./db";
+import {blogsCollection, commentsCollection, postsCollection, usersCollection} from "./db";
 import {ObjectId, WithId} from "mongodb";
-
-export type BlogViewType = {
-    id: string,
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string
-}
-export type PostViewType = {
-    id: string,
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string,
-}
-export type UserViewType = {
-    id: string,
-    login: string,
-    email: string,
-    createdAt: string
-}
-export type BlogPaginatorType = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: BlogViewType[]
-}
-export type PostPaginatorType = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: PostViewType[]
-}
-export type UserPaginatorType = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: UserViewType[]
-}
-
-export type QueryParser = {
-    searchNameTerm: string | null,
-    sortBy: string,
-    sortDirection: 1 | -1
-    pageNumber: number
-    pageSize: number
-}
-export type UserQueryParser = {
-    sortBy: string,
-    sortDirection: 1 | -1,
-    pageNumber: number,
-    pageSize: number,
-    searchLoginTerm: string | null,
-    searchEmailTerm: string | null
-}
+import {
+    BlogDbType,
+    BlogPaginatorType,
+    BlogViewType, CommentInsertDbType, CommentPaginatorType, CommentViewType,
+    PostDbType,
+    PostPaginatorType,
+    PostViewType,
+    QueryParser, UserInsertDbType, UserPaginatorType, UserQueryParser, UserViewType
+} from "./types";
+import {commentsRepo} from "./comments-database";
 
 export const blogsQueryRepo = {
     async viewAllBlogs(q: QueryParser): Promise<BlogPaginatorType> {
@@ -160,6 +110,46 @@ export const postsQueryRepo = {
             createdAt: post.createdAt
         }
     }
+}
+
+export const commentsQueryRepo = {
+    async findCommentsByPostId(postId: string, q: QueryParser): Promise<CommentPaginatorType | null> {
+        const foundCommentsCount = await commentsCollection.countDocuments({postId: {$eq: postId}})
+        const reqPageDbComments = await commentsCollection.find({postId: {$eq: postId}})
+            .sort({[q.sortBy]: q.sortDirection})
+            .skip((q.pageNumber - 1) * q.pageSize)
+            .limit(q.pageSize)
+            .toArray()
+        if (!reqPageDbComments) return null
+        else {
+            const pageCommentsByPostId = reqPageDbComments.map(c => commentsQueryRepo._mapCommentToViewType(c))
+            return {
+                pagesCount: Math.ceil(foundCommentsCount / q.pageSize),
+                page: q.pageNumber,
+                pageSize: q.pageSize,
+                totalCount: foundCommentsCount,
+                items: pageCommentsByPostId
+            }
+        }
+    },
+    async findCommentById(id: string): Promise<CommentViewType | null> {
+        if (!ObjectId.isValid(id)) return null
+        else {
+            const foundComment = await commentsCollection.findOne({_id: new ObjectId(id)})
+            if (foundComment) return commentsQueryRepo._mapCommentToViewType(foundComment)
+            else return null
+        }
+    },
+    _mapCommentToViewType(comment: WithId<CommentInsertDbType>): CommentViewType {
+        return {
+            id: comment._id.toString(),
+            content: comment.content,
+            userId: comment.userId,
+            userLogin: comment.userLogin,
+            createdAt: comment.createdAt
+        }
+    }
+
 }
 
 export const usersQueryRepo = {

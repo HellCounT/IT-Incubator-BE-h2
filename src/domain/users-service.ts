@@ -1,7 +1,6 @@
-import {UserViewType} from "../repositories/queryRepo";
-import {UserCreateType} from "../repositories/db";
 import bcrypt from 'bcrypt'
 import {usersRepo} from "../repositories/users-database";
+import {UserCreateType, UserViewType} from "../repositories/types";
 
 export const usersService = {
     async createUser(login: string, password: string, email: string): Promise<UserViewType> {
@@ -23,7 +22,7 @@ export const usersService = {
         if (!foundUser) return false
         else {
             const userHash = foundUser.hash
-          //const passwordHash = await usersService._generateHash(password)
+            //const passwordHash = await usersService._generateHash(password)
             return await bcrypt.compare(password,userHash)
         }
     },
