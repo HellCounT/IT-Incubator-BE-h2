@@ -12,8 +12,10 @@ commentsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 commentsRouter.put('/:commentId',
+    //InputValidation
     commentDataValidator.contentCheck,
     inputValidation,
+    //Handlers
     async (req: Request, res: Response) => {
     const flagUpdate = await commentsService.updateComment(req.params.commentId, req.body.content)
     if (flagUpdate) res.sendStatus(204)
@@ -21,8 +23,10 @@ commentsRouter.put('/:commentId',
 })
 
 commentsRouter.delete('/:commentId',
+    //InputValidation
     commentDataValidator.contentCheck,
     inputValidation,
+    //Handlers
     async (req: Request, res: Response) => {
     const flagDelete = await commentsService.deleteComment(req.params.commentId)
     if (flagDelete) res.sendStatus(204)

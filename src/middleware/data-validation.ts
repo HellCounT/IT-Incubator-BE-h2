@@ -10,7 +10,6 @@ const isValidBlogId: CustomValidator = async (blogId: string) => {
         throw new Error('Invalid parent blog id')
     }
 }
-
 const isValidBlogIdParam: CustomValidator = async (id: string) => {
     if (await blogsCollection.findOne({_id: new ObjectId(id)})) {
         return true
@@ -18,7 +17,6 @@ const isValidBlogIdParam: CustomValidator = async (id: string) => {
         throw new Error('Invalid parent blog id')
     }
 }
-
 const isValidPostIdParam: CustomValidator = async (id: string) => {
     if (await postsCollection.findOne({_id: new ObjectId(id)})) {
         return true
@@ -74,7 +72,6 @@ export const inputValidation = (req: Request, res: Response, next: NextFunction)
         next()
     }
 }
-
 export const paramIdInputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
     if (errorMessagesArray.length > 0) {
