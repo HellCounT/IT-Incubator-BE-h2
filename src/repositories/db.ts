@@ -1,9 +1,10 @@
 import {MongoClient} from "mongodb";
 import dotenv from "dotenv"
 import {Blog, CommentInsertDbType, Post, UserInsertDbType} from "./types";
+import {settings} from "../settings";
 dotenv.config()
 
-const mongoUri = process.env.MONGO_URL
+const mongoUri = settings.MONGO_URI
 
 if (!mongoUri) {
     throw new Error('MONGO URL IS NOT FOUND')

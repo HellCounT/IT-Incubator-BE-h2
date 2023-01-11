@@ -15,7 +15,6 @@ import {parseQueryPagination} from "../application/queryParsers";
 export const blogsRouter = Router({})
 
 
-
 blogsRouter.get('/', async (req: Request, res: Response) => {
     // query validation and parsing
     let queryParams: QueryParser = parseQueryPagination(req)
@@ -37,14 +36,14 @@ blogsRouter.get('/:id/posts',
     paramIdInputValidation,
     //Handlers
     async (req: Request, res: Response) => {
-    let queryParams: QueryParser = parseQueryPagination(req)
-    const postsByBlogIdSearchResult = await postsQueryRepo.findPostsByBlogId(req.params.id, queryParams)
-    if (postsByBlogIdSearchResult) {
-        res.status(200).send(postsByBlogIdSearchResult)
-    } else {
-        res.sendStatus(404)
-    }
-})
+        let queryParams: QueryParser = parseQueryPagination(req)
+        const postsByBlogIdSearchResult = await postsQueryRepo.findPostsByBlogId(req.params.id, queryParams)
+        if (postsByBlogIdSearchResult) {
+            res.status(200).send(postsByBlogIdSearchResult)
+        } else {
+            res.sendStatus(404)
+        }
+    })
 
 blogsRouter.post('/', basicAuth,
     //Input validation

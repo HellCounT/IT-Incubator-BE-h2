@@ -1,10 +1,16 @@
 import {Request, Response, Router} from "express";
 import {basicAuth} from "../middleware/auth";
-import {postDataValidator, inputValidation} from "../middleware/data-validation";
+import {
+    postDataValidator,
+    inputValidation,
+    commentDataValidator,
+    paramIdInputValidation
+} from "../middleware/data-validation";
 import {postsService} from "../domain/posts-service";
-import {postsQueryRepo} from "../repositories/queryRepo";
+import {commentsQueryRepo, postsQueryRepo} from "../repositories/queryRepo";
 import {parseQueryPagination} from "../application/queryParsers";
 import {QueryParser} from "../repositories/types";
+import {commentsService} from "../domain/comments-service";
 
 export const postsRouter = Router({})
 
@@ -23,10 +29,18 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
     }
 })
 
-postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
-    // query validation and parsing
-    let queryParams = parseQueryPagination(req)
-})
+postsRouter.get('/:postId/comments',
+    //Input validation
+    commentDataValidator.postIdParamCheck,
+    paramIdInputValidation,
+    //Handlers
+    async (req: Request, res: Response) => {
+        // query validation and parsing
+        let queryParams = parseQueryPagination(req)
+        const commentsByPostIdSearchResult = await commentsQueryRepo.findCommentsByPostId(req.params.postId, queryParams)
+        if (commentsByPostIdSearchResult) res.status(200).send(commentsByPostIdSearchResult)
+        else res.sendStatus(404)
+    })
 
 postsRouter.post('/', basicAuth,
     //Input validation
@@ -37,16 +51,22 @@ postsRouter.post('/', basicAuth,
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
-    const postAddResult = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
-    if (postAddResult) {
-        res.status(201).send(postAddResult)
-    } else {
-        res.sendStatus(400)
-    }
-})
+        const postAddResult = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+        if (postAddResult) {
+            res.status(201).send(postAddResult)
+        } else {
+            res.sendStatus(400)
+        }
+    })
 
-postsRouter.post('/:postId/comments', async (req: Request, res: Response) => {
-
+postsRouter.post('/:postId/comments',
+    commentDataValidator.postIdParamCheck,
+    paramIdInputValidation,
+    commentDataValidator.contentCheck,
+    async (req: Request, res: Response) => {
+    const commentCreateResult = commentsService.createComment(req.params.postId, XXX, req.body.content)
+    if (commentCreateResult) return res.status(201).send(commentCreateResult)
+    else res.status(400)
 })
 
 postsRouter.put('/:id', basicAuth,
@@ -58,13 +78,13 @@ postsRouter.put('/:id', basicAuth,
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
-    const flagUpdate = await postsService.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
-    if (flagUpdate) {
-        res.sendStatus(204)
-    } else {
-        res.sendStatus(404)
-    }
-})
+        const flagUpdate = await postsService.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+        if (flagUpdate) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(404)
+        }
+    })
 
 postsRouter.delete('/:id', basicAuth, async (req: Request, res: Response) => {
     if (await postsService.deletePost(req.params.id)) {

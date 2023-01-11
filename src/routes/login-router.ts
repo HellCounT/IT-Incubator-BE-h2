@@ -1,6 +1,7 @@
 import {Request, Response, Router} from "express";
 import {usersService} from "../domain/users-service";
 import {inputValidation, userDataValidator} from "../middleware/data-validation";
+import {jwtService} from "../application/jwt-service";
 
 export const loginRouter = Router({})
 
@@ -10,6 +11,11 @@ loginRouter.post('/login',
     inputValidation,
     async (req: Request, res: Response) => {
     const checkResult = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
-    if (checkResult) res.sendStatus(204)
+    if (checkResult) {
+        const token = {
+            "accessToken": jwtService.createJwt(checkResult)
+        }
+        res.sendStatus(200).send(token)
+    }
     else res.sendStatus(401)
 })
