@@ -9,7 +9,7 @@ import {
 import {blogsService} from "../domain/blogs-service";
 import {blogsQueryRepo, postsQueryRepo} from "../repositories/queryRepo";
 import {postsService} from "../domain/posts-service";
-import {QueryParser} from "../repositories/types";
+import {QueryParser} from "../types/types";
 import {parseQueryPagination} from "../application/queryParsers";
 
 export const blogsRouter = Router({})

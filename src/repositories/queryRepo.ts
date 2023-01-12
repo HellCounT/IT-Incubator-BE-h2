@@ -8,7 +8,7 @@ import {
     PostPaginatorType,
     PostViewType,
     QueryParser, UserInsertDbType, UserPaginatorType, UserQueryParser, UserViewType
-} from "./types";
+} from "../types/types";
 
 export const blogsQueryRepo = {
     async viewAllBlogs(q: QueryParser): Promise<BlogPaginatorType> {
@@ -194,5 +194,8 @@ export const usersQueryRepo = {
             email: user.email,
             createdAt: user.createdAt
         }
+    },
+    async findUserById(userId: ObjectId): Promise<WithId<UserInsertDbType> | null> {
+        return await usersCollection.findOne({_id: {$eq: userId}})
     }
 }

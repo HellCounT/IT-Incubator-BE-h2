@@ -2,6 +2,7 @@ import {Request, Response, Router} from "express";
 import {commentsService} from "../domain/comments-service";
 import {commentDataValidator, inputValidation} from "../middleware/data-validation";
 import {commentsQueryRepo} from "../repositories/queryRepo";
+import {authMiddleware} from "../middleware/auth-middleware";
 
 export const commentsRouter = Router({})
 
@@ -12,23 +13,27 @@ commentsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 commentsRouter.put('/:commentId',
+    authMiddleware,
     //InputValidation
     commentDataValidator.contentCheck,
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
-    const flagUpdate = await commentsService.updateComment(req.params.commentId, req.body.content)
-    if (flagUpdate) res.sendStatus(204)
-    else res.sendStatus(400)
+    const updateStatus = await commentsService.updateComment(req.params.commentId, req.user!._id, req.body.content)
+    if (updateStatus.status === "Updated") res.sendStatus(204)
+    if (updateStatus.status === "Not Found") res.sendStatus(404)
+    if (updateStatus.status === "Forbidden") res.sendStatus(403)
 })
 
 commentsRouter.delete('/:commentId',
+    authMiddleware,
     //InputValidation
     commentDataValidator.contentCheck,
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
-    const flagDelete = await commentsService.deleteComment(req.params.commentId)
-    if (flagDelete) res.sendStatus(204)
-    else res.sendStatus(400)
+    const deleteStatus = await commentsService.deleteComment(req.params.commentId, req.user!._id)
+    if (deleteStatus.status === "Deleted") res.sendStatus(204)
+    if (deleteStatus.status === "Not Found") res.sendStatus(404)
+    if (deleteStatus.status === "Forbidden") res.sendStatus(403)
 })

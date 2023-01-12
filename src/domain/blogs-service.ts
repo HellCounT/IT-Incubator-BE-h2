@@ -1,5 +1,5 @@
 import {blogsRepo} from '../repositories/blogs-database'
-import {Blog, BlogViewType} from "../repositories/types";
+import {Blog, BlogViewType} from "../types/types";
 
 export const blogsService = {
     async createBlog(title: string, desc: string, website: string): Promise<BlogViewType> {

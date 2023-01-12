@@ -136,3 +136,7 @@ export type UserQueryParser = {
     searchLoginTerm: string | null,
     searchEmailTerm: string | null
 }
+
+export type StatusType = {
+    status: "Not Found" | "Forbidden" | "Updated" | "Deleted"
+}

@@ -1,6 +1,6 @@
 import {blogsCollection, postsCollection} from "./db";
 import {ObjectId} from "mongodb";
-import {PostCreateType, PostViewType} from "./types";
+import {PostCreateType, PostViewType} from "../types/types";
 
 export const postsRepo = {
     async createPost(newPost: PostCreateType): Promise<PostViewType | null> {

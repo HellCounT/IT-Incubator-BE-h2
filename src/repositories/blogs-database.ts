@@ -1,6 +1,6 @@
 import {blogsCollection} from "./db";
 import {InsertOneResult, ObjectId} from "mongodb";
-import {Blog} from "./types";
+import {Blog} from "../types/types";
 
 export const blogsRepo = {
     async createBlog(newBlog: Blog): Promise<InsertOneResult> {

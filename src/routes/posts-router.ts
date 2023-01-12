@@ -9,8 +9,9 @@ import {
 import {postsService} from "../domain/posts-service";
 import {commentsQueryRepo, postsQueryRepo} from "../repositories/queryRepo";
 import {parseQueryPagination} from "../application/queryParsers";
-import {QueryParser} from "../repositories/types";
+import {QueryParser} from "../types/types";
 import {commentsService} from "../domain/comments-service";
+import {authMiddleware} from "../middleware/auth-middleware";
 
 export const postsRouter = Router({})
 
@@ -60,11 +61,12 @@ postsRouter.post('/', basicAuth,
     })
 
 postsRouter.post('/:postId/comments',
+    authMiddleware,
     commentDataValidator.postIdParamCheck,
     paramIdInputValidation,
     commentDataValidator.contentCheck,
     async (req: Request, res: Response) => {
-    const commentCreateResult = commentsService.createComment(req.params.postId, XXX, req.body.content)
+    const commentCreateResult = commentsService.createComment(req.params.postId, req.user!._id, req.body.content)
     if (commentCreateResult) return res.status(201).send(commentCreateResult)
     else res.status(400)
 })

@@ -1,5 +1,5 @@
 import {Request} from "express";
-import {QueryParser, UserQueryParser} from "../repositories/types";
+import {QueryParser, UserQueryParser} from "../types/types";
 
 export const parseQueryPagination = (req: Request): QueryParser => {
     let queryParamsParser: QueryParser = {

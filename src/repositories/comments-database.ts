@@ -1,6 +1,6 @@
 import {ObjectId} from "mongodb";
 import {commentsCollection, postsCollection, usersCollection} from "./db";
-import {CommentCreateType, CommentInsertDbType, CommentViewType} from "./types";
+import {CommentCreateType, CommentInsertDbType, CommentViewType} from "../types/types";
 
 export const commentsRepo = {
     async createComment(newComment: CommentCreateType): Promise<CommentViewType | null> {

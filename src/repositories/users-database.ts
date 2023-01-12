@@ -1,6 +1,6 @@
 import {usersCollection} from "./db";
 import {ObjectId} from "mongodb";
-import {UserCreateType, UserInsertDbType, UserViewType} from "./types";
+import {UserCreateType, UserInsertDbType, UserViewType} from "../types/types";
 
 export const usersRepo = {
     async findByLoginOrEmail(loginOrEmail: string) {

@@ -4,7 +4,7 @@ import {inputValidation, userDataValidator} from "../middleware/data-validation"
 import {usersService} from "../domain/users-service";
 import {basicAuth} from "../middleware/auth";
 import {parseUserQueryPagination} from "../application/queryParsers";
-import {UserQueryParser} from "../repositories/types";
+import {UserQueryParser} from "../types/types";
 
 export const usersRouter = Router({})
 

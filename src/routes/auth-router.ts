@@ -3,9 +3,9 @@ import {usersService} from "../domain/users-service";
 import {inputValidation, userDataValidator} from "../middleware/data-validation";
 import {jwtService} from "../application/jwt-service";
 
-export const loginRouter = Router({})
+export const authRouter = Router({})
 
-loginRouter.post('/login',
+authRouter.post('/login',
     userDataValidator.passwordCheck,
     userDataValidator.loginOrEmailCheck,
     inputValidation,

@@ -4,7 +4,7 @@ import {postsRouter} from "./routes/posts-router";
 import {deleteAllRouter} from "./routes/delete-all-router";
 import {runDb} from "./repositories/db";
 import {usersRouter} from "./routes/users-router";
-import {loginRouter} from "./routes/login-router";
+import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
 
 const app = express()
@@ -16,7 +16,7 @@ app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
 app.use('/testing', deleteAllRouter)
 app.use('/users', usersRouter)
-app.use('/auth', loginRouter)
+app.use('/auth', authRouter)
 app.use('/comments', commentsRouter)
 
 const startApp = async () => {
