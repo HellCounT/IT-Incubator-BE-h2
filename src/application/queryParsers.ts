@@ -9,6 +9,7 @@ export const parseQueryPagination = (req: Request): QueryParser => {
         pageNumber: 1,
         pageSize: 10
     }
+    if (req.query.searchNameTerm) queryParamsParser.searchNameTerm = req.query.searchNameTerm.toString()
     if (req.query.sortBy) queryParamsParser.sortBy = req.query.sortBy.toString()
     if (req.query.sortDirection && req.query.sortDirection.toString() === "asc") queryParamsParser.sortDirection = 1
     if (req.query.pageNumber) queryParamsParser.pageNumber = +req.query.pageNumber
