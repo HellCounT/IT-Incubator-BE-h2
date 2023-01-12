@@ -17,8 +17,11 @@ export const commentsRepo = {
             const result = await commentsCollection.insertOne({...mappedComment})
             return {
                 id: result.insertedId.toString(),
-                ...mappedComment
-            }
+                content: mappedComment.content,
+                userId: mappedComment.userId,
+                userLogin: mappedComment.userLogin,
+                createdAt: mappedComment.createdAt
+                }
         } else return null
     },
     async updateComment(commentId: string, content: string): Promise<boolean | null> {
