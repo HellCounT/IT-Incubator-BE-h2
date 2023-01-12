@@ -27,9 +27,6 @@ commentsRouter.put('/:commentId',
 
 commentsRouter.delete('/:commentId',
     authMiddleware,
-    //InputValidation
-    commentDataValidator.contentCheck,
-    inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
     const deleteStatus = await commentsService.deleteComment(req.params.commentId, req.user!._id)
