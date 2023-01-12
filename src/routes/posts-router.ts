@@ -68,8 +68,8 @@ postsRouter.post('/:postId/comments',
     commentDataValidator.contentCheck,
     inputValidation,
     async (req: Request, res: Response) => {
-    const commentCreateResult = commentsService.createComment(req.params.postId, req.user!._id, req.body.content)
-    if (commentCreateResult) return res.status(201).send(commentCreateResult)
+    const createdComment = await commentsService.createComment(req.params.postId, req.user!._id, req.body.content)
+    if (createdComment) return res.status(201).send(createdComment)
     else res.status(400)
 })
 
