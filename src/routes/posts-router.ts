@@ -13,6 +13,7 @@ import {QueryParser} from "../types/types";
 import {commentsService} from "../domain/comments-service";
 import {authMiddleware} from "../middleware/auth-middleware";
 
+
 export const postsRouter = Router({})
 
 postsRouter.get('/', async (req: Request, res: Response) => {
@@ -95,4 +96,3 @@ postsRouter.delete('/:id', basicAuth, async (req: Request, res: Response) => {
         res.sendStatus(404)
     }
 })
-

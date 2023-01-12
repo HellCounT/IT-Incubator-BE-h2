@@ -1,10 +1,13 @@
 import {WithId} from "mongodb";
 import {UserInsertDbType} from "./types";
 
+interface RequestWithUser extends Request {
+    user: WithId<UserInsertDbType> | null
+}
+
 declare global{
-    declare namespace Express {
-        export interface Request {
-            user: WithId<UserInsertDbType> | null
+     namespace Express {
+        interface Request extends RequestWithUser{
         }
     }
 }
