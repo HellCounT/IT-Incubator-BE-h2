@@ -38,6 +38,20 @@ const userAlreadyExistsLogin: CustomValidator = async (login: string) => {
         throw new Error('User already exists')
     }
 }
+const userEmailExists: CustomValidator = async (email: string) => {
+    if (await usersCollection.findOne({"accountData.email": email})) {
+        return true
+    } else {
+        throw new Error('Invalid email address')
+    }
+}
+const validationCodeExists: CustomValidator = async (code: string) => {
+    if (await usersCollection.findOne({"emailConfirmationData.confirmationCode": code})) {
+        return true
+    } else {
+        throw new Error('Invalid email address')
+    }
+}
 
 export const blogDataValidator = {
     nameCheck: body('name').exists().isString().trim().isLength({min: 1, max: 15}).withMessage("Name is invalid"),
@@ -74,7 +88,8 @@ export const userDataValidator = {
     loginOrEmailCheck: body('loginOrEmail').isString().trim().notEmpty().withMessage("Login/email is invalid"),
     userExistsCheckEmail: body('email').custom(userAlreadyExistsEmail).withMessage('User already exists'),
     userExistsCheckLogin: body('login').custom(userAlreadyExistsLogin).withMessage('User already exists'),
-    codeExists: body('code').exists().isString().notEmpty().withMessage('Invalid code')
+    codeExists: body('code').exists().isString().notEmpty().custom(validationCodeExists).withMessage('Invalid code'),
+    userEmailCheck: body('code').exists().isString().notEmpty().custom(userEmailExists).withMessage('Invalid email address')
 }
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})

@@ -54,7 +54,7 @@ authRouter.post('/registration-confirmation',
 })
 
 authRouter.post('/registration-email-resending',
-    userDataValidator.emailCheck,
+    userDataValidator.userEmailCheck,
     inputValidation,
     async (req: Request, res: Response) => {
     const result = await usersService.resendActivationCode(req.body.email)
