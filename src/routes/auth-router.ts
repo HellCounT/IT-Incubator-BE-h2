@@ -42,7 +42,10 @@ authRouter.post('/registration',
         if (userRegResult) res.sendStatus(204)
 })
 
-authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
+authRouter.post('/registration-confirmation',
+    userDataValidator.codeExists,
+    inputValidation,
+    async (req: Request, res: Response) => {
     const result = await usersService.confirmUserEmail(req.body.code)
     console.log(result)
     if (!result) res.sendStatus(400)
@@ -51,6 +54,7 @@ authRouter.post('/registration-confirmation', async (req: Request, res: Response
 
 authRouter.post('/registration-email-resending',
     userDataValidator.emailCheck,
+    inputValidation,
     async (req: Request, res: Response) => {
     const result = await usersService.resendActivationCode(req.body.email)
     if (!result) res.sendStatus(400)

@@ -64,7 +64,8 @@ export const userDataValidator = {
     passwordCheck: body('password').isString().trim().isLength({min: 6, max: 20}).withMessage("Password is invalid"),
     emailCheck: body('email').isString().notEmpty().isEmail().withMessage("Email is invalid"),
     loginOrEmailCheck: body('loginOrEmail').isString().trim().notEmpty().withMessage("Login/email is invalid"),
-    userExistsCheck: body('email').custom(userAlreadyExists).withMessage('User already exists')
+    userExistsCheck: body('email').custom(userAlreadyExists).withMessage('User already exists'),
+    codeExists: body('code').exists().isString().notEmpty().withMessage('Invalid code')
 }
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
