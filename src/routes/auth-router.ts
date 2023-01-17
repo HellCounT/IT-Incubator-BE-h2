@@ -33,7 +33,8 @@ authRouter.post('/registration',
     userDataValidator.loginCheck,
     userDataValidator.passwordCheck,
     userDataValidator.emailCheck,
-    userDataValidator.userExistsCheck,
+    userDataValidator.userExistsCheckEmail,
+    userDataValidator.userExistsCheckLogin,
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
