@@ -5,6 +5,10 @@ import {jwtService} from "../application/jwt-service";
 
 export const authRouter = Router({})
 
+authRouter.get('/me', (req: Request, res: Response) => {
+
+})
+
 authRouter.post('/login',
     userDataValidator.passwordCheck,
     userDataValidator.loginOrEmailCheck,
@@ -18,4 +22,16 @@ authRouter.post('/login',
         res.status(200).send(token)
     }
     else res.sendStatus(401)
+})
+
+authRouter.post('/registration', (req: Request, res: Response) => {
+
+})
+
+authRouter.post('/registration-confirmation', (req: Request, res: Response) => {
+
+})
+
+authRouter.post('/registration-email-resending', (req: Request, res: Response) => {
+
 })

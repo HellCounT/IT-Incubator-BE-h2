@@ -85,6 +85,11 @@ export type UserViewType = {
     email: string,
     createdAt: string
 }
+export type MeViewType = {
+    email: string,
+    login: string,
+    userId: string
+}
 export type CommentViewType = {
     id: string,
     content: string,
