@@ -1,5 +1,11 @@
-export const emailAdapter = {
-    async sendEmail() {
+import nodemailer from 'nodemailer'
+import {settings} from "../settings";
 
-    }
-}
+export const transport = nodemailer.createTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    auth: {
+        user: "hellcount.test@gmail.com",
+        pass: settings.EMAIL_PASSWORD
+    },
+});

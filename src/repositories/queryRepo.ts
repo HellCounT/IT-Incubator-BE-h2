@@ -169,8 +169,8 @@ export const usersQueryRepo = {
             .find(
                 {
                     $or: [
-                        {login: {$regex: loginFilter, $options: 'i'}},
-                        {email: {$regex: emailFilter, $options: 'i'}}
+                        {'accountData.login': {$regex: loginFilter, $options: 'i'}},
+                        {'accountData.email': {$regex: emailFilter, $options: 'i'}}
                     ]
                 }
             )
@@ -190,9 +190,9 @@ export const usersQueryRepo = {
     _mapUserToViewType(user: WithId<UserInsertDbType>): UserViewType {
         return {
             id: user._id.toString(),
-            login: user.login,
-            email: user.email,
-            createdAt: user.createdAt
+            login: user.accountData.login,
+            email: user.accountData.email,
+            createdAt: user.accountData.createdAt
         }
     },
     async findUserById(userId: ObjectId): Promise<WithId<UserInsertDbType> | null> {

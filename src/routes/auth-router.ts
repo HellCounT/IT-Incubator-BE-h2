@@ -24,14 +24,31 @@ authRouter.post('/login',
     else res.sendStatus(401)
 })
 
-authRouter.post('/registration', (req: Request, res: Response) => {
-
+authRouter.post('/registration',
+    //Input validation
+    userDataValidator.loginCheck,
+    userDataValidator.passwordCheck,
+    userDataValidator.emailCheck,
+    userDataValidator.userExistsCheck,
+    inputValidation,
+    //Handlers
+    async (req: Request, res: Response) => {
+        //User registration
+        const userRegResult = await usersService.registerUser(req.body.login, req.body.password, req.body.email)
+        if (userRegResult) res.sendStatus(204)
 })
 
-authRouter.post('/registration-confirmation', (req: Request, res: Response) => {
-
+authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
+    const result = await usersService.confirmUserEmail(req.body.code)
+    console.log(result)
+    if (!result) res.sendStatus(400)
+    else return res.sendStatus(204)
 })
 
-authRouter.post('/registration-email-resending', (req: Request, res: Response) => {
-
+authRouter.post('/registration-email-resending',
+    userDataValidator.emailCheck,
+    async (req: Request, res: Response) => {
+    const result = await usersService.resendActivationCode(req.body.email)
+    if (!result) res.sendStatus(400)
+    else return res.sendStatus(204)
 })

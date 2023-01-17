@@ -10,7 +10,7 @@ export const commentsRepo = {
             const mappedComment: CommentInsertDbType = {
                 content: newComment.content,
                 userId: newComment.userId,
-                userLogin: foundUser.login,
+                userLogin: foundUser.accountData.login,
                 postId: newComment.postId,
                 createdAt: newComment.createdAt
             }

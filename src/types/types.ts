@@ -38,16 +38,26 @@ export type PostCreateType = {
     createdAt: string,
 }
 export type UserInsertDbType = {
-    login: string,
-    email: string,
-    hash: string,
-    createdAt: string
+    accountData: {
+        login: string,
+        email: string,
+        hash: string,
+        createdAt: string,
+    },
+    emailConfirmationData: {
+        confirmationCode: string,
+        expirationDate: string,
+        isConfirmed: boolean
+    }
 }
 export type UserCreateType = {
     login: string,
     password: string,
     email: string,
-    createdAt: string
+    createdAt: string,
+    confirmationCode: string,
+    expirationDate: string,
+    isConfirmed: boolean
 }
 export type CommentCreateType = {
     content: string,

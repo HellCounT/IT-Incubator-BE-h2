@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {body, CustomValidator, param, validationResult} from "express-validator";
-import {blogsCollection, postsCollection} from "../repositories/db";
+import {blogsCollection, postsCollection, usersCollection} from "../repositories/db";
 import {ObjectId} from "mongodb";
 
 const isValidBlogId: CustomValidator = async (blogId: string) => {
@@ -22,6 +22,13 @@ const isValidPostIdParam: CustomValidator = async (id: string) => {
         return true
     } else {
         throw new Error('Invalid parent post id')
+    }
+}
+const userAlreadyExists: CustomValidator = async (email: string) => {
+    if (!await usersCollection.findOne({"accountData.email": email})) {
+        return true
+    } else {
+        throw new Error('User already exists')
     }
 }
 export const blogDataValidator = {
@@ -56,7 +63,8 @@ export const userDataValidator = {
     }).matches(/^[a-zA-Z0-9_-]*$/).withMessage("Login is invalid"),
     passwordCheck: body('password').isString().trim().isLength({min: 6, max: 20}).withMessage("Password is invalid"),
     emailCheck: body('email').isString().notEmpty().isEmail().withMessage("Email is invalid"),
-    loginOrEmailCheck: body('loginOrEmail').isString().trim().notEmpty().withMessage("Login/email is invalid")
+    loginOrEmailCheck: body('loginOrEmail').isString().trim().notEmpty().withMessage("Login/email is invalid"),
+    userExistsCheck: body('email').custom(userAlreadyExists).withMessage('User already exists')
 }
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})
