@@ -3,12 +3,13 @@ import {ObjectId, WithId} from "mongodb";
 import {
     BlogDbType,
     BlogPaginatorType,
-    BlogViewType, CommentInsertDbType, CommentPaginatorType, CommentViewType,
+    BlogViewType, CommentInsertDbType, CommentPaginatorType, CommentViewType, MeViewType,
     PostDbType,
     PostPaginatorType,
     PostViewType,
     QueryParser, UserInsertDbType, UserPaginatorType, UserQueryParser, UserViewType
 } from "../types/types";
+import {jwtService} from "../application/jwt-service";
 
 export const blogsQueryRepo = {
     async viewAllBlogs(q: QueryParser): Promise<BlogPaginatorType> {
@@ -197,5 +198,16 @@ export const usersQueryRepo = {
     },
     async findUserById(userId: ObjectId): Promise<WithId<UserInsertDbType> | null> {
         return await usersCollection.findOne({_id: {$eq: userId}})
+    },
+    async getMyInfo(token: string): Promise<MeViewType | null> {
+        const foundUserId = await jwtService.getUserIdByToken(token)
+        if (!foundUserId) return null
+        const foundUser = await this.findUserById(foundUserId)
+        if (!foundUser) return null
+        return {
+            email: foundUser.accountData.email,
+            login: foundUser.accountData.login,
+            userId: foundUserId.toString()
+        }
     }
 }

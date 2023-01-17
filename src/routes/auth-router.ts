@@ -2,11 +2,15 @@ import {Request, Response, Router} from "express";
 import {usersService} from "../domain/users-service";
 import {inputValidation, userDataValidator} from "../middleware/data-validation";
 import {jwtService} from "../application/jwt-service";
+import {authMiddleware} from "../middleware/auth-middleware";
+import {usersQueryRepo} from "../repositories/queryRepo";
 
 export const authRouter = Router({})
 
-authRouter.get('/me', (req: Request, res: Response) => {
-
+authRouter.get('/me', authMiddleware, async (req: Request, res: Response) => {
+    const token = req.headers.authorization!.split(' ')[1]
+    const result = await usersQueryRepo.getMyInfo(token)
+    res.status(204).send(result)
 })
 
 authRouter.post('/login',
