@@ -24,13 +24,21 @@ const isValidPostIdParam: CustomValidator = async (id: string) => {
         throw new Error('Invalid parent post id')
     }
 }
-const userAlreadyExists: CustomValidator = async (email: string) => {
+const userAlreadyExistsEmail: CustomValidator = async (email: string) => {
     if (!await usersCollection.findOne({"accountData.email": email})) {
         return true
     } else {
         throw new Error('User already exists')
     }
 }
+const userAlreadyExistsLogin: CustomValidator = async (login: string) => {
+    if (!await usersCollection.findOne({"accountData.login": login})) {
+        return true
+    } else {
+        throw new Error('User already exists')
+    }
+}
+
 export const blogDataValidator = {
     nameCheck: body('name').exists().isString().trim().isLength({min: 1, max: 15}).withMessage("Name is invalid"),
     descriptionCheck: body('description').exists().isString().trim().isLength({
@@ -64,7 +72,8 @@ export const userDataValidator = {
     passwordCheck: body('password').isString().trim().isLength({min: 6, max: 20}).withMessage("Password is invalid"),
     emailCheck: body('email').isString().notEmpty().isEmail().withMessage("Email is invalid"),
     loginOrEmailCheck: body('loginOrEmail').isString().trim().notEmpty().withMessage("Login/email is invalid"),
-    userExistsCheck: body('email').custom(userAlreadyExists).withMessage('User already exists'),
+    userExistsCheckEmail: body('email').custom(userAlreadyExistsEmail).withMessage('User already exists'),
+    userExistsCheckLogin: body('login').custom(userAlreadyExistsLogin).withMessage('User already exists'),
     codeExists: body('code').exists().isString().notEmpty().withMessage('Invalid code')
 }
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {

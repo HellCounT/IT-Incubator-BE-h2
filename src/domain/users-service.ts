@@ -57,7 +57,7 @@ export const usersService = {
         }
     },
     async confirmUserEmail(code: string): Promise<boolean> {
-        let foundUser = await usersRepo.findByConfirmationCode(code)
+        const foundUser = await usersRepo.findByConfirmationCode(code)
         console.log(foundUser)
         if (!foundUser) return false
         if (foundUser.emailConfirmationData.isConfirmed) return false
@@ -66,7 +66,7 @@ export const usersService = {
         return await usersRepo.confirmUser(foundUser._id.toString())
     },
     async resendActivationCode(email: string): Promise<boolean> {
-        let foundUser = await usersRepo.findByLoginOrEmail(email)
+        const foundUser = await usersRepo.findByLoginOrEmail(email)
         if (!foundUser) return false
         if (foundUser.emailConfirmationData.isConfirmed) return false
         try {
