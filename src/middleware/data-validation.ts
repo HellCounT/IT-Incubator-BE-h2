@@ -38,18 +38,22 @@ const userAlreadyExistsLogin: CustomValidator = async (login: string) => {
         throw new Error('User already exists')
     }
 }
-const userEmailExists: CustomValidator = async (email: string) => {
-    if (await usersCollection.findOne({"accountData.email": email})) {
-        return true
+const userEmailExistsOrConfirmed: CustomValidator = async (email: string) => {
+    const foundUser = await usersCollection.findOne({"accountData.email": email})
+    if (foundUser) {
+        if (foundUser.emailConfirmationData.isConfirmed) throw new Error('Already confirmed')
+        else return true
     } else {
         throw new Error('Invalid email address')
     }
 }
-const validationCodeExists: CustomValidator = async (code: string) => {
-    if (await usersCollection.findOne({"emailConfirmationData.confirmationCode": code})) {
-        return true
+const validationCodeExistsAndNotConfirmed: CustomValidator = async (code: string) => {
+    const foundUser = await usersCollection.findOne({"emailConfirmationData.confirmationCode": code})
+    if (foundUser) {
+        if (foundUser.emailConfirmationData.isConfirmed) throw new Error('Already confirmed')
+        else return true
     } else {
-        throw new Error('Invalid email address')
+        throw new Error('Invalid code')
     }
 }
 
@@ -88,8 +92,8 @@ export const userDataValidator = {
     loginOrEmailCheck: body('loginOrEmail').isString().trim().notEmpty().withMessage("Login/email is invalid"),
     userExistsCheckEmail: body('email').custom(userAlreadyExistsEmail).withMessage('User already exists'),
     userExistsCheckLogin: body('login').custom(userAlreadyExistsLogin).withMessage('User already exists'),
-    codeExists: body('code').exists().isString().notEmpty().custom(validationCodeExists).withMessage('Invalid code'),
-    userEmailCheck: body('code').exists().isString().notEmpty().custom(userEmailExists).withMessage('Invalid email address')
+    codeCheck: body('code').exists().isString().notEmpty().custom(validationCodeExistsAndNotConfirmed).withMessage('Invalid code or account is already confirmed'),
+    userEmailCheck: body('email').exists().isString().notEmpty().custom(userEmailExistsOrConfirmed).withMessage('Invalid email address')
 }
 export const inputValidation = (req: Request, res: Response, next: NextFunction) => {
     const errorMessagesArray = validationResult(req).array({onlyFirstError: true})

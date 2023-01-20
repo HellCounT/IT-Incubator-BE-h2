@@ -44,7 +44,7 @@ authRouter.post('/registration',
 })
 
 authRouter.post('/registration-confirmation',
-    userDataValidator.codeExists,
+    userDataValidator.codeCheck,
     inputValidation,
     async (req: Request, res: Response) => {
     const result = await usersService.confirmUserEmail(req.body.code)
