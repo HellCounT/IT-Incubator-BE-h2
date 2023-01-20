@@ -69,8 +69,10 @@ export const usersService = {
         const foundUser = await usersRepo.findByLoginOrEmail(email)
         if (!foundUser) return false
         if (foundUser.emailConfirmationData.isConfirmed) return false
+        const newCode = uuidv4()
+        await usersRepo.updateConfirmationCode(foundUser._id, newCode)
         try {
-            await emailManager.resendEmailRegistrationCode(foundUser.accountData.email, foundUser.emailConfirmationData.confirmationCode)
+            await emailManager.resendEmailRegistrationCode(foundUser.accountData.email, newCode)
             return true
         } catch (error) {
             console.error(error)

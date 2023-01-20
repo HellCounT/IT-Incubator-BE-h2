@@ -41,7 +41,7 @@ export const usersRepo = {
             return result.deletedCount === 1
         } else return null
     },
-    async confirmUser(id: string) {
+    async confirmUser(id: string): Promise<boolean> {
         const result = await usersCollection.updateOne({_id: new ObjectId(id)}, {
             $set:
                 {
@@ -49,5 +49,14 @@ export const usersRepo = {
                 }
         })
         return result.matchedCount === 1
+    },
+    async updateConfirmationCode(id: ObjectId, newCode: string): Promise<void> {
+        await usersCollection.updateOne({_id: id}, {
+            $set:
+                {
+                    'emailConfirmationData.confirmationCode': newCode
+                }
+        })
+        return
     }
 }
