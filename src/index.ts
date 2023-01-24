@@ -6,11 +6,14 @@ import {runDb} from "./repositories/db";
 import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
+import cookieParser from 'cookie-parser'
+
 
 const app = express()
 const port = process.env.PORT || 3000
 
 app.use(express.json())
+app.use(cookieParser())
 
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
