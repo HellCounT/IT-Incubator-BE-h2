@@ -10,6 +10,7 @@ import {
     QueryParser, UserInsertDbType, UserPaginatorType, UserQueryParser, UserViewType
 } from "../types/types";
 import {jwtService} from "../application/jwt-service";
+import {settings} from "../settings";
 
 export const blogsQueryRepo = {
     async viewAllBlogs(q: QueryParser): Promise<BlogPaginatorType> {
@@ -200,7 +201,7 @@ export const usersQueryRepo = {
         return await usersCollection.findOne({_id: {$eq: userId}})
     },
     async getMyInfo(token: string): Promise<MeViewType | null> {
-        const foundUserId = await jwtService.getUserIdByToken(token)
+        const foundUserId = await jwtService.getUserIdByToken(token, settings.JWT_SECRET)
         if (!foundUserId) return null
         const foundUser = await this.findUserById(foundUserId)
         if (!foundUser) return null
