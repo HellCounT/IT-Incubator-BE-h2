@@ -13,17 +13,20 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         if (userId) {
             req.user = await usersQueryRepo.findUserById(userId)
             next()
-        } else res.sendStatus(401)
+        } else {
+            res.sendStatus(401)
+        }
     }
 }
 export const refreshTokenCheck = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.cookies.refreshToken) {
-        return res.sendStatus(401)
+        res.sendStatus(401)
     }
     else {
         const token = req.cookies.refreshToken
         if (await expiredTokensRepo.findToken(token)) {
-            return res.sendStatus(401)
+            res.sendStatus(401)
+            return
         }
         const userId = await jwtService.getUserIdByToken(token, settings.JWT_REFRESH_SECRET)
         if (userId) {
