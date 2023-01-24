@@ -15,7 +15,7 @@ const refreshTokenCookieOptions = {
 authRouter.get('/me', authMiddleware, async (req: Request, res: Response) => {
     const token = req.headers.authorization!.split(' ')[1]
     const result = await usersQueryRepo.getMyInfo(token)
-    res.status(204).send(result)
+    res.status(200).send(result)
 })
 
 authRouter.post('/login',
