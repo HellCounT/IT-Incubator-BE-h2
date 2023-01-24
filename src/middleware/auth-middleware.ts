@@ -17,7 +17,9 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     }
 }
 export const refreshTokenCheck = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.cookies.refreshToken) res.sendStatus(401)
+    if (!req.cookies.refreshToken) {
+        return res.sendStatus(401)
+    }
     else {
         const token = req.cookies.refreshToken
         if (await expiredTokensRepo.findToken(token)) {
