@@ -20,7 +20,10 @@ export const refreshTokenCheck = async (req: Request, res: Response, next: NextF
     if (!req.cookies.refreshToken) res.sendStatus(401)
     else {
         const token = req.cookies.refreshToken
-        if (await expiredTokensRepo.findToken(token)) res.sendStatus(401)
+        if (await expiredTokensRepo.findToken(token)) {
+            res.sendStatus(401)
+            return
+        }
         const userId = await jwtService.getUserIdByToken(token, settings.JWT_REFRESH_SECRET)
         if (userId) {
             req.user = await usersQueryRepo.findUserById(userId)
