@@ -29,7 +29,7 @@ authRouter.post('/login',
             "accessToken": jwtService.createJwt(checkResult)
         }
         const newRefreshToken = jwtService.createRefreshJwt(checkResult)
-        res.status(200).send(accessToken).cookie('refresh_token', newRefreshToken, refreshTokenCookieOptions)
+        res.status(200).cookie('refresh_token', newRefreshToken, refreshTokenCookieOptions).send(accessToken)
     }
     else res.sendStatus(401)
 })
