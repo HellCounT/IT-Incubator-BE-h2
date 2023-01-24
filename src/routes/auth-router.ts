@@ -27,24 +27,24 @@ authRouter.post('/login',
     if (checkResult) {
         const accessToken = {"accessToken": jwtService.createJwt(checkResult)}
         const newRefreshToken = jwtService.createRefreshJwt(checkResult)
-        res.status(200).cookie('refresh_token', newRefreshToken, refreshTokenCookieOptions).send(accessToken)
+        res.status(200).cookie('refreshToken', newRefreshToken, refreshTokenCookieOptions).send(accessToken)
     }
     else res.sendStatus(401)
 })
 
 authRouter.post('/logout', async (req: Request, res: Response) => {
-    await jwtService.addTokenToDb(req.user!._id, req.cookies!.refresh_token)
-    res.status(204).cookie('refresh_token', '', refreshTokenCookieOptions)
+    await jwtService.addTokenToDb(req.user!._id, req.cookies!.refreshToken)
+    res.status(204).cookie('refreshToken', '', refreshTokenCookieOptions)
 })
 
 authRouter.post('/refresh-token',
     refreshTokenCheck,
     async (req: Request, res: Response) => {
-        const newRefreshToken = await jwtService.updateRefreshJwt(req.user, req.cookies.refresh_token)
+        const newRefreshToken = await jwtService.updateRefreshJwt(req.user, req.cookies.refreshToken)
         const accessToken = {
             "accessToken": jwtService.createJwt(req.user)
         }
-        res.status(200).send(accessToken).cookie('refresh_token', newRefreshToken, refreshTokenCookieOptions)
+        res.status(200).send(accessToken).cookie('refreshToken', newRefreshToken, refreshTokenCookieOptions)
 })
 
 authRouter.post('/registration',
