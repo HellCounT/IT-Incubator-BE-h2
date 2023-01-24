@@ -25,9 +25,7 @@ authRouter.post('/login',
     async (req: Request, res: Response) => {
     const checkResult = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
     if (checkResult) {
-        const accessToken = {
-            "accessToken": jwtService.createJwt(checkResult)
-        }
+        const accessToken = {"accessToken": jwtService.createJwt(checkResult)}
         const newRefreshToken = jwtService.createRefreshJwt(checkResult)
         res.status(200).cookie('refresh_token', newRefreshToken, refreshTokenCookieOptions).send(accessToken)
     }
