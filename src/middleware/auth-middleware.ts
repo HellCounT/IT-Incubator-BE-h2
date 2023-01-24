@@ -21,8 +21,7 @@ export const refreshTokenCheck = async (req: Request, res: Response, next: NextF
     else {
         const token = req.cookies.refreshToken
         if (await expiredTokensRepo.findToken(token)) {
-            res.sendStatus(401)
-            return
+            return res.sendStatus(401)
         }
         const userId = await jwtService.getUserIdByToken(token, settings.JWT_REFRESH_SECRET)
         if (userId) {
