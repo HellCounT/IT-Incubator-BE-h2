@@ -2,10 +2,15 @@ import {Request, Response, Router} from "express";
 import {usersService} from "../domain/users-service";
 import {inputValidation, userDataValidator} from "../middleware/data-validation";
 import {jwtService} from "../application/jwt-service";
-import {authMiddleware} from "../middleware/auth-middleware";
+import {authMiddleware, refreshTokenCheck} from "../middleware/auth-middleware";
 import {usersQueryRepo} from "../repositories/queryRepo";
 
 export const authRouter = Router({})
+
+const refreshTokenCookieOptions = {
+    httpOnly: true,
+    secure: true,
+}
 
 authRouter.get('/me', authMiddleware, async (req: Request, res: Response) => {
     const token = req.headers.authorization!.split(' ')[1]
@@ -20,12 +25,28 @@ authRouter.post('/login',
     async (req: Request, res: Response) => {
     const checkResult = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
     if (checkResult) {
-        const token = {
+        const accessToken = {
             "accessToken": jwtService.createJwt(checkResult)
         }
-        res.status(200).send(token)
+        const newRefreshToken = jwtService.createRefreshJwt(checkResult)
+        res.status(200).send(accessToken).cookie('refresh_token', newRefreshToken, refreshTokenCookieOptions)
     }
     else res.sendStatus(401)
+})
+
+authRouter.post('/logout', async (req: Request, res: Response) => {
+    await jwtService.addTokenToDb(req.user!._id, req.cookies.refresh_token!)
+    res.status(204).cookie('refresh_token', '', refreshTokenCookieOptions)
+})
+
+authRouter.post('/refresh-token',
+    refreshTokenCheck,
+    async (req: Request, res: Response) => {
+        const newRefreshToken = await jwtService.updateRefreshJwt(req.user, req.cookies.refresh_token)
+        const accessToken = {
+            "accessToken": jwtService.createJwt(req.user)
+        }
+        res.status(200).send(accessToken).cookie('refresh_token', newRefreshToken, refreshTokenCookieOptions)
 })
 
 authRouter.post('/registration',

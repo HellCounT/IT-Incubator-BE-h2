@@ -1,6 +1,6 @@
 import {MongoClient} from "mongodb";
 import dotenv from "dotenv"
-import {Blog, CommentInsertDbType, Post, UserInsertDbType} from "../types/types";
+import {Blog, CommentInsertDbType, ExpiredTokenInsertDbType, Post, UserInsertDbType} from "../types/types";
 import {settings} from "../settings";
 dotenv.config()
 
@@ -17,6 +17,7 @@ export const postsCollection = client.db().collection<Post>('posts')
 export const blogsCollection = client.db().collection<Blog>('blogs')
 export const usersCollection = client.db().collection<UserInsertDbType>('users')
 export const commentsCollection = client.db().collection<CommentInsertDbType>('comments')
+export const expiredTokensCollection = client.db().collection<ExpiredTokenInsertDbType>('expiredTokens')
 
 export const runDb = async() => {
     try {

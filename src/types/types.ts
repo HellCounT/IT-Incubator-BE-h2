@@ -72,6 +72,10 @@ export type CommentInsertDbType = {
     postId: string,
     createdAt: string
 }
+export type ExpiredTokenInsertDbType = {
+    userId: ObjectId,
+    refreshToken: string,
+}
 
 export type BlogViewType = {
     id: string,
