@@ -35,7 +35,7 @@ authRouter.post('/login',
 })
 
 authRouter.post('/logout', async (req: Request, res: Response) => {
-    await jwtService.addTokenToDb(req.user!._id, req.cookies.refresh_token!)
+    await jwtService.addTokenToDb(req.user!._id, req.cookies!.refresh_token)
     res.status(204).cookie('refresh_token', '', refreshTokenCookieOptions)
 })
 
