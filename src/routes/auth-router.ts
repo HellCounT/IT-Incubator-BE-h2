@@ -4,6 +4,7 @@ import {inputValidation, userDataValidator} from "../middleware/data-validation"
 import {jwtService} from "../application/jwt-service";
 import {authMiddleware, refreshTokenCheck} from "../middleware/auth-middleware";
 import {usersQueryRepo} from "../repositories/queryRepo";
+import {rateLimiterMiddleware} from "../middleware/rate-limiter-middleware";
 
 export const authRouter = Router({})
 
@@ -19,6 +20,7 @@ authRouter.get('/me', authMiddleware, async (req: Request, res: Response) => {
 })
 
 authRouter.post('/login',
+    rateLimiterMiddleware(10, 5),
     userDataValidator.passwordCheck,
     userDataValidator.loginOrEmailCheck,
     inputValidation,
@@ -53,6 +55,7 @@ authRouter.post('/refresh-token',
 
 authRouter.post('/registration',
     //Input validation
+    rateLimiterMiddleware(10, 5),
     userDataValidator.loginCheck,
     userDataValidator.passwordCheck,
     userDataValidator.emailCheck,
@@ -67,6 +70,7 @@ authRouter.post('/registration',
 })
 
 authRouter.post('/registration-confirmation',
+    rateLimiterMiddleware(10, 5),
     userDataValidator.codeCheck,
     inputValidation,
     async (req: Request, res: Response) => {
@@ -77,6 +81,7 @@ authRouter.post('/registration-confirmation',
 })
 
 authRouter.post('/registration-email-resending',
+    rateLimiterMiddleware(10, 5),
     userDataValidator.userEmailCheck,
     inputValidation,
     async (req: Request, res: Response) => {
