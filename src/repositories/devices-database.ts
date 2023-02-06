@@ -28,6 +28,7 @@ export const devicesRepo = {
                 refreshTokenMeta: newRefreshTokenMeta
             }
         })
+        console.log(await activeSessionsCollection.findOne({_id: deviceId}))
         return result.matchedCount === 1
     },
     async deleteSessionById(deviceId: ObjectId): Promise<boolean> {
