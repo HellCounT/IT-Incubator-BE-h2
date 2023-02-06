@@ -216,7 +216,7 @@ export const usersQueryRepo = {
         const foundUserId = await jwtService.getUserIdByToken(refreshToken, settings.JWT_REFRESH_SECRET)
         if (!foundUserId) return null
         const sessions = await activeSessionsCollection.find({userId: {$eq: foundUserId}}).toArray()
-        console.log(sessions.map(e => this._mapDevicesToViewType(e)))
+        console.log(sessions.map(e => this._mapDevicesToViewType(e)), 'active sessions')
         return sessions.map(e => this._mapDevicesToViewType(e))
     },
     async findSessionByDeviceId(deviceId: ObjectId): Promise<ActiveSessionDbType | null> {
