@@ -20,7 +20,7 @@ export const devicesRepo = {
     },
     async updateSessionWithDeviceId(newRefreshTokenMeta: string, deviceId: ObjectId,
                                     issueDate: Date, expDate: Date): Promise<boolean> {
-        console.log(issueDate.toISOString())
+        console.log(issueDate.toISOString(), 'updated issueDate')
         const result = await activeSessionsCollection.updateOne({_id: deviceId}, {
             $set: {
                 issuedAt: issueDate,
