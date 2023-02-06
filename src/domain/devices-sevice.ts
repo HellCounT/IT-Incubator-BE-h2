@@ -6,17 +6,12 @@ import {usersQueryRepo} from "../repositories/queryRepo";
 
 export const devicesService = {
     async deleteSession(refreshToken: string, userId: string, deviceId: string): Promise<StatusType> {
-        const sessionId = await jwtService.getDeviceIdByRefreshToken(refreshToken)
-        console.log(sessionId, 'get jot when we wants to delete session')
+       // const sessionId = await jwtService.getDeviceIdByRefreshToken(refreshToken)
         console.log(deviceId, 'device id from device service')
+        console.log(userId, 'user id')
         const foundSession = await usersQueryRepo.findSessionByDeviceId(new ObjectId(deviceId))
 
-        if (!foundSession) return {
-            status: "Not Found",
-            code: 404,
-            message: "Session doesn't exist or expired"
-        }
-        if (sessionId) {
+        if (foundSession) {
             //change expression userid instead deviceid
             if (foundSession.userId.toString() === userId) {
                 await devicesRepo.deleteSessionById(new ObjectId(deviceId))
