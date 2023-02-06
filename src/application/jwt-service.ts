@@ -16,7 +16,7 @@ export const jwtService = {
         const expDate = new Date(expDateSec * 1000)
         const refreshToken = jwt.sign({
             userId: user._id,
-            deviceId: deviceId,
+            deviceId: deviceId.toString(), ///// ObjectId or String?
             exp: expDateSec
         }, settings.JWT_REFRESH_SECRET)
         await devicesService.startNewSession(refreshToken, user._id, deviceId, deviceName, ip, issueDate, expDate)
@@ -56,5 +56,4 @@ export const jwtService = {
             return null
         }
     }
-
 }

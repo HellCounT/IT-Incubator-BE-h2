@@ -14,14 +14,14 @@ export const devicesService = {
             message: "Session doesn't exist or expired"
         }
         if (sessionId) {
-            if (deviceId !== sessionId.toString()) {
+            if (deviceId !== foundSession._id.toString()) {
                 return {
                     status: "Forbidden",
                     code: 403,
                     message: 'Attempt to delete the deviceId of other user'
                 }
             } else {
-                await devicesRepo.deleteSessionById(sessionId)
+                await devicesRepo.deleteSessionById(new ObjectId(deviceId))
                 return {
                     status: "Deleted",
                     code: 204,
