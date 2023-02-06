@@ -11,7 +11,7 @@ export const jwtService = {
     },
     async createRefreshJwt(user: WithId<UserInsertDbType>, ip: string, deviceName: string): Promise<string> {
         const deviceId = new ObjectId()
-        const issueDate = new Date()
+        const issueDate = new Date(Date.now())
         const expDateSec = Math.floor( issueDate.getTime() / 1000) + 20
         const expDate = new Date(expDateSec * 1000)
         const refreshToken = jwt.sign({
@@ -25,7 +25,7 @@ export const jwtService = {
     async updateRefreshJwt(user: WithId<UserInsertDbType>, refreshToken: string): Promise<string> {
         const oldRefreshToken: any = jwt.verify(refreshToken, settings.JWT_REFRESH_SECRET)
         await expiredTokensRepo.addTokenToDb(refreshToken, user._id)
-        const issueDate = new Date()
+        const issueDate = new Date(Date.now())
         const expDateSec = Math.floor( issueDate.getTime() / 1000) + 20
         const expDate = new Date(expDateSec * 1000)
         const newRefreshToken = jwt.sign({
