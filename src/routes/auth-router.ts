@@ -5,6 +5,7 @@ import {jwtService} from "../application/jwt-service";
 import {authMiddleware, refreshTokenCheck} from "../middleware/auth-middleware";
 import {usersQueryRepo} from "../repositories/queryRepo";
 import {rateLimiterMiddleware} from "../middleware/rate-limiter-middleware";
+import {devicesService} from "../domain/devices-sevice";
 
 export const authRouter = Router({})
 
@@ -40,6 +41,7 @@ authRouter.post('/logout',
     refreshTokenCheck,
     async (req: Request, res: Response) => {
     await jwtService.addTokenToDb(req.user!._id, req.cookies.refreshToken)
+    await devicesService.logoutSession(req.cookies.refreshToken)
     res.status(204).cookie('refreshToken', '', refreshTokenCookieOptions).send()
 })
 

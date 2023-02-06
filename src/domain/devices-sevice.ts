@@ -36,6 +36,13 @@ export const devicesService = {
             }
         }
     },
+    async logoutSession(refreshToken: string): Promise<void> {
+        const sessionId = await jwtService.getDeviceIdByRefreshToken(refreshToken)
+        if (sessionId) {
+            await devicesRepo.deleteSessionById(sessionId)
+            return
+        }
+    },
     async deleteAllOtherSessions(userId: ObjectId, refreshToken: string): Promise<StatusType> {
         const deviceId = await jwtService.getDeviceIdByRefreshToken(refreshToken)
         if (deviceId) {
