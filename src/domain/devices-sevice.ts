@@ -7,10 +7,7 @@ import {usersQueryRepo} from "../repositories/queryRepo";
 export const devicesService = {
     async deleteSession(refreshToken: string, userId: ObjectId, deviceId: string): Promise<StatusType> {
        // const sessionId = await jwtService.getDeviceIdByRefreshToken(refreshToken)
-        console.log(deviceId, 'device id from device service')
-        console.log(userId, 'user id')
         const foundSession = await usersQueryRepo.findSessionByDeviceId(new ObjectId(deviceId))
-        console.log(foundSession?.userId, 'found user id')
         if (foundSession) {
             //change expression userid instead deviceid
             if (foundSession.userId.toString() === userId.toString()) {

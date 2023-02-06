@@ -20,8 +20,6 @@ export const devicesRepo = {
     },
     async updateSessionWithDeviceId(newRefreshTokenMeta: string, deviceId: string,
                                     issueDate: Date, expDate: Date): Promise<boolean> {
-        console.log(issueDate.toISOString(), 'updated issueDate')
-        console.log(deviceId, ' device id in update method')
         const result = await activeSessionsCollection.updateOne({_id: new ObjectId(deviceId)}, {
             $set: {
                 issuedAt: issueDate,
@@ -29,8 +27,6 @@ export const devicesRepo = {
                 refreshTokenMeta: newRefreshTokenMeta
             }
         })
-        const a = await activeSessionsCollection.findOne({_id: new ObjectId(deviceId)})
-        console.log(a)
         return result.matchedCount === 1
     },
     async deleteSessionById(deviceId: ObjectId): Promise<boolean> {
