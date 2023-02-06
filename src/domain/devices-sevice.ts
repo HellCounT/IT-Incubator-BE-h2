@@ -7,6 +7,8 @@ import {usersQueryRepo} from "../repositories/queryRepo";
 export const devicesService = {
     async deleteSession(refreshToken: string, userId: string, deviceId: string): Promise<StatusType> {
         const sessionId = await jwtService.getDeviceIdByRefreshToken(refreshToken)
+        console.log(sessionId, 'get jot when we wants to delete session')
+        console.log(deviceId, 'device id from device service')
         const foundSession = await usersQueryRepo.findSessionByDeviceId(new ObjectId(deviceId))
         if (!foundSession) return {
             status: "Not Found",
