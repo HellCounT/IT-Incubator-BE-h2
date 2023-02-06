@@ -76,6 +76,16 @@ export type ExpiredTokenInsertDbType = {
     userId: ObjectId,
     refreshToken: string,
 }
+export type ActiveSessionDbType = {
+    _id: ObjectId, //Session Device ID
+    userId: ObjectId,
+    ip: string,
+    deviceName: string,
+    issuedAt: Date,
+    expirationDate: Date,
+    refreshTokenMeta: string
+}
+
 
 export type BlogViewType = {
     id: string,
@@ -110,6 +120,12 @@ export type CommentViewType = {
     userId: string,
     userLogin: string,
     createdAt: string
+}
+export type DeviceViewType = {
+    ip: string,
+    title: string,
+    lastActiveDate: string,
+    deviceId: string
 }
 export type BlogPaginatorType = {
     pagesCount: number,
@@ -157,5 +173,8 @@ export type UserQueryParser = {
 }
 
 export type StatusType = {
-    status: "Not Found" | "Forbidden" | "Updated" | "Deleted"
+    status: "Not Found" | "Forbidden" | "Updated" | "Deleted" | "Unauthorized" | "Too many requests" | "No content",
+    code?: number,
+    message?: string,
+    data?: any,
 }

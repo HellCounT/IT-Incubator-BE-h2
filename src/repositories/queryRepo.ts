@@ -1,9 +1,10 @@
-import {blogsCollection, commentsCollection, postsCollection, usersCollection} from "./db";
+import {activeSessionsCollection, blogsCollection, commentsCollection, postsCollection, usersCollection} from "./db";
 import {ObjectId, WithId} from "mongodb";
 import {
+    ActiveSessionDbType,
     BlogDbType,
     BlogPaginatorType,
-    BlogViewType, CommentInsertDbType, CommentPaginatorType, CommentViewType, MeViewType,
+    BlogViewType, CommentInsertDbType, CommentPaginatorType, CommentViewType, DeviceViewType, MeViewType,
     PostDbType,
     PostPaginatorType,
     PostViewType,
@@ -209,6 +210,23 @@ export const usersQueryRepo = {
             email: foundUser.accountData.email,
             login: foundUser.accountData.login,
             userId: foundUserId.toString()
+        }
+    },
+    async getAllSessions(refreshToken: string): Promise<Array<DeviceViewType> | null> {
+        const foundUserId = await jwtService.getUserIdByToken(refreshToken, settings.JWT_REFRESH_SECRET)
+        if (!foundUserId) return null
+        const sessions = await activeSessionsCollection.find({userId: {$eq: foundUserId.toString()}}).toArray()
+        return sessions.map(e => this._mapDevicesToViewType(e))
+    },
+    async findSessionByDeviceId(deviceId: ObjectId): Promise<ActiveSessionDbType> {
+        return await activeSessionsCollection.findOne({_id: deviceId})
+    },
+    _mapDevicesToViewType(device: ActiveSessionDbType): DeviceViewType {
+        return {
+            deviceId: device._id.toString(),
+            ip: device.ip,
+            title: device.deviceName,
+            lastActiveDate: device.issuedAt.toISOString()
         }
     }
 }

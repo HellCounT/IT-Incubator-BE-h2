@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {usersQueryRepo} from "../repositories/queryRepo";
 import {settings} from "../settings";
-import {expiredTokensRepo} from "../repositories/tokens-database";
+import {expiredTokensRepo} from "../repositories/expired-tokens-database";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
