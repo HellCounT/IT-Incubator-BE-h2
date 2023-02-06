@@ -14,18 +14,18 @@ export const devicesService = {
             message: "Session doesn't exist or expired"
         }
         if (sessionId) {
-            if (deviceId !== sessionId.toString()) {
-                return {
-                    status: "Forbidden",
-                    code: 403,
-                    message: 'Attempt to delete the deviceId of other user'
-                }
-            } else {
+            if (deviceId === sessionId.toString()) {
                 await devicesRepo.deleteSessionById(new ObjectId(deviceId))
                 return {
                     status: "Deleted",
                     code: 204,
                     message: 'Session has been deleted'
+                }
+            } else {
+                return {
+                    status: "Forbidden",
+                    code: 403,
+                    message: 'Attempt to delete the deviceId of other user'
                 }
             }
         } else {
