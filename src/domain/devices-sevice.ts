@@ -14,7 +14,7 @@ export const devicesService = {
             message: "Session doesn't exist or expired"
         }
         if (sessionId) {
-            if (deviceId !== foundSession._id.toString()) {
+            if (deviceId !== sessionId.toString()) {
                 return {
                     status: "Forbidden",
                     code: 403,
