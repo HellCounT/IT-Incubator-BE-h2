@@ -29,7 +29,7 @@ export const devicesService = {
             }
         }
     },
-    async deleteAllOtherSessions(userId: string, refreshToken: string): Promise<StatusType> {
+    async deleteAllOtherSessions(userId: ObjectId, refreshToken: string): Promise<StatusType> {
         const deviceId = await jwtService.getDeviceIdByRefreshToken(refreshToken)
         if (deviceId) {
             await devicesRepo.deleteAllOtherSessions(userId, deviceId)

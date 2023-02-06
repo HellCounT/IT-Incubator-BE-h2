@@ -215,10 +215,10 @@ export const usersQueryRepo = {
     async getAllSessions(refreshToken: string): Promise<Array<DeviceViewType> | null> {
         const foundUserId = await jwtService.getUserIdByToken(refreshToken, settings.JWT_REFRESH_SECRET)
         if (!foundUserId) return null
-        const sessions = await activeSessionsCollection.find({userId: {$eq: foundUserId.toString()}}).toArray()
+        const sessions = await activeSessionsCollection.find({userId: {$eq: foundUserId}}).toArray()
         return sessions.map(e => this._mapDevicesToViewType(e))
     },
-    async findSessionByDeviceId(deviceId: ObjectId): Promise<ActiveSessionDbType> {
+    async findSessionByDeviceId(deviceId: ObjectId): Promise<ActiveSessionDbType | null> {
         return await activeSessionsCollection.findOne({_id: deviceId})
     },
     _mapDevicesToViewType(device: ActiveSessionDbType): DeviceViewType {
