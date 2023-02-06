@@ -23,7 +23,7 @@ devicesRouter.delete('/:deviceId', refreshTokenCheck, async (req: Request, res: 
     const refreshToken = req.cookies.refreshToken
     const result = await devicesService.deleteSession(refreshToken, req.user?._id, req.params.deviceId)
     if (!result) res.sendStatus(404)
-    if (result.code === 403) res.sendStatus(403)
     if (result.code === 404) res.sendStatus(404)
+    if (result.code === 403) res.sendStatus(403)
     if (result.code === 204) res.sendStatus(204)
 })
