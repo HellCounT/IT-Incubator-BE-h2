@@ -35,7 +35,7 @@ export const jwtService = {
             exp: expDateSec
         }, settings.JWT_REFRESH_SECRET)
         await devicesService.updateSessionWithDeviceId(newRefreshToken, oldRefreshToken.deviceId, issueDate, expDate)
-        console.log(newRefreshToken, 'new refresh')
+        console.log(jwt.verify(newRefreshToken, settings.JWT_REFRESH_SECRET), 'new refresh')
         return newRefreshToken
     },
     async getUserIdByToken(token: string, secret: string): Promise<ObjectId | null> {
@@ -53,6 +53,7 @@ export const jwtService = {
     async getDeviceIdByRefreshToken(refreshToken: string): Promise<ObjectId | null> {
         try {
             const result: any = jwt.verify(refreshToken, settings.JWT_REFRESH_SECRET)
+            console.log(result.deviceId, 'device id before cast to object id')
             return new ObjectId(result.deviceId)
         } catch (error) {
             return null

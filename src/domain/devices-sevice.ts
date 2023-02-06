@@ -16,7 +16,8 @@ export const devicesService = {
             message: "Session doesn't exist or expired"
         }
         if (sessionId) {
-            if (deviceId === sessionId.toString()) {
+            //change to string to object id
+            if (new ObjectId(deviceId) === sessionId) {
                 await devicesRepo.deleteSessionById(new ObjectId(deviceId))
                 return {
                     status: "Deleted",
