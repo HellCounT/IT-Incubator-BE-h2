@@ -13,7 +13,7 @@ export const devicesService = {
         console.log(foundSession?.userId, 'found user id')
         if (foundSession) {
             //change expression userid instead deviceid
-            if (foundSession.userId === userId) {
+            if (foundSession.userId.toString() === userId.toString()) {
                 await devicesRepo.deleteSessionById(new ObjectId(deviceId))
                 return {
                     status: "Deleted",
