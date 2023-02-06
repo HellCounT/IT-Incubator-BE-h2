@@ -65,7 +65,7 @@ export const devicesService = {
         const refreshTokenMeta = this._createMeta(refreshToken)
         await devicesRepo.addSessionToDb(refreshTokenMeta, deviceId, userId, ip, deviceName, issueDate, expDate)
     },
-    async updateSessionWithDeviceId(newRefreshToken: string, deviceId: ObjectId,
+    async updateSessionWithDeviceId(newRefreshToken: string, deviceId: string,
                                     issueDate: Date, expDate: Date) {
         const newRefreshTokenMeta = this._createMeta(newRefreshToken)
         return await devicesRepo.updateSessionWithDeviceId(newRefreshTokenMeta, deviceId, issueDate, expDate)
