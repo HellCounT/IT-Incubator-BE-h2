@@ -2,10 +2,17 @@ import {ObjectId} from "mongodb";
 import {devicesRepo} from "../repositories/devices-database";
 import {jwtService} from "../application/jwt-service";
 import {StatusType} from "../types/types";
+import {usersQueryRepo} from "../repositories/queryRepo";
 
 export const devicesService = {
     async deleteSession(refreshToken: string, userId: string, deviceId: string): Promise<StatusType> {
         const sessionId = await jwtService.getDeviceIdByRefreshToken(refreshToken)
+        const foundSession = await usersQueryRepo.findSessionByDeviceId(new ObjectId(deviceId))
+        if (!foundSession) return {
+            status: "Not Found",
+            code: 404,
+            message: "Session doesn't exist or expired"
+        }
         if (sessionId) {
             if (new ObjectId(deviceId) !== sessionId) {
                 return {
