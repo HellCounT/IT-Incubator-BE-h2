@@ -108,6 +108,12 @@ authRouter.post('/new-password',
     inputValidation,
     async (req: Request, res: Response) => {
     const result = await usersService.updatePasswordByRecoveryCode(req.body.recoveryCode, req.body.newPassword)
-    if (!result) res.sendStatus(400)
+    if (!result) {
+        const errorsMessages = [{
+            message: "Incorrect recovery code",
+            field: "recoveryCode"
+        }]
+        res.status(400).send(errorsMessages)
+    }
     else res.sendStatus(204)
 })
