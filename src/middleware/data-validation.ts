@@ -88,6 +88,7 @@ export const userDataValidator = {
         max: 10
     }).matches(/^[a-zA-Z0-9_-]*$/).withMessage("Login is invalid"),
     passwordCheck: body('password').isString().trim().isLength({min: 6, max: 20}).withMessage("Password is invalid"),
+    newPasswordCheck: body('password').isString().trim().isLength({min: 6, max: 20}).withMessage("Password is invalid"),
     emailCheck: body('email').isString().notEmpty().isEmail().withMessage("Email is invalid"),
     loginOrEmailCheck: body('loginOrEmail').isString().trim().notEmpty().withMessage("Login/email is invalid"),
     userExistsCheckEmail: body('email').custom(userAlreadyExistsEmail).withMessage('User already exists'),

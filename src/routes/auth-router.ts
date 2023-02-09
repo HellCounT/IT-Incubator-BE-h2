@@ -104,7 +104,7 @@ authRouter.post('/password-recovery',
 
 authRouter.post('/new-password',
     rateLimiterMiddleware(10, 5),
-    userDataValidator.passwordCheck,
+    userDataValidator.newPasswordCheck,
     inputValidation,
     async (req: Request, res: Response) => {
     const result = await usersService.updatePasswordByRecoveryCode(req.body.recoveryCode, req.body.newPassword)
