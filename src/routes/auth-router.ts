@@ -113,7 +113,7 @@ authRouter.post('/new-password',
             message: "Incorrect recovery code",
             field: "recoveryCode"
         }]
-        res.status(400).send(errorsMessages)
+        res.status(400).send({errorsMessages})
     }
     else res.sendStatus(204)
 })
