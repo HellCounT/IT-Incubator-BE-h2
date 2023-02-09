@@ -78,8 +78,31 @@ export const usersService = {
             return false
         }
     },
+    async sendPasswordRecoveryCode(email: string) {
+        const newCode = uuidv4()
+        const foundUser = await usersRepo.findByLoginOrEmail(email)
+        if (foundUser) {
+            await usersRepo.updateRecoveryCode(foundUser._id, newCode)
+        }
+        try {
+            await emailManager.sendRecoveryCode(email, newCode)
+            return true
+        } catch (error) {
+            console.error(error)
+            return false
+        }
+    },
+    async updatePasswordByRecoveryCode(recoveryCode: string, newPassword: string) {
+        const foundUser = await usersRepo.findByRecoveryCode(recoveryCode)
+        if (!foundUser) return false
+        else {
+            const newPasswordHash = await usersService._generateHash(newPassword)
+            await usersRepo.updateHashByRecoveryCode(foundUser._id, newPasswordHash)
+            return true
+        }
+    },
     async _generateHash(password: string) {
         const salt = await bcrypt.genSalt(10)
         return await bcrypt.hash(password, salt)
-    }
+    },
 }

@@ -91,3 +91,23 @@ authRouter.post('/registration-email-resending',
     if (!result) res.sendStatus(400)
     else return res.sendStatus(204)
 })
+
+authRouter.post('/password-recovery',
+    rateLimiterMiddleware(10, 5),
+    userDataValidator.emailCheck,
+    inputValidation,
+    async (req: Request, res: Response) => {
+    const result = await usersService.sendPasswordRecoveryCode(req.body.email)
+    if (!result) res.sendStatus(400)
+    else res.sendStatus(204)
+})
+
+authRouter.post('/new-password',
+    rateLimiterMiddleware(10, 5),
+    userDataValidator.passwordCheck,
+    inputValidation,
+    async (req: Request, res: Response) => {
+    const result = await usersService.updatePasswordByRecoveryCode(req.body.recoveryCode, req.body.newPassword)
+    if (!result) res.sendStatus(400)
+    else res.sendStatus(204)
+})

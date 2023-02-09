@@ -1,5 +1,5 @@
 import {usersCollection} from "./db";
-import {ObjectId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {UserCreateType, UserInsertDbType, UserViewType} from "../types/types";
 
 export const usersRepo = {
@@ -9,9 +9,14 @@ export const usersRepo = {
                 {'accountData.login': loginOrEmail}]
         })
     },
-    async findByConfirmationCode(emailConfirmationCode: string) {
+    async findByConfirmationCode(emailConfirmationCode: string): Promise<WithId<UserInsertDbType> | null> {
         return await usersCollection.findOne(
             {'emailConfirmationData.confirmationCode': emailConfirmationCode})
+    },
+    async findByRecoveryCode(recoveryCode: string): Promise<WithId<UserInsertDbType> | null> {
+        return await usersCollection.findOne(
+            {'recoveryCodeData.recoveryCode': recoveryCode}
+        )
     },
     async createUser(newUser: UserCreateType, hash: string): Promise<UserViewType> {
         const insertDbUser: UserInsertDbType = {
@@ -58,5 +63,22 @@ export const usersRepo = {
                 }
         })
         return
+    },
+    async updateRecoveryCode(id: ObjectId, newRecoveryCode: string): Promise<void> {
+        await usersCollection.updateOne({_id: id}, {
+            $set:
+                {
+                    'recoveryCodeData.recoveryCode': newRecoveryCode,
+                    'recoveryCodeData.expirationDate': new Date()
+                }
+        })
+    },
+    async updateHashByRecoveryCode(id: ObjectId, newHash: string): Promise<void> {
+        await usersCollection.updateOne({_id: id}, {
+            $set:
+                {
+                    'accountData.hash': newHash
+                }
+        })
     }
 }

@@ -47,7 +47,11 @@ export type UserInsertDbType = {
     emailConfirmationData: {
         confirmationCode: string,
         expirationDate: string,
-        isConfirmed: boolean
+        isConfirmed: boolean,
+    },
+    recoveryCodeData?: {
+        recoveryCode: string,
+        expirationDate: string,
     }
 }
 export type UserCreateType = {

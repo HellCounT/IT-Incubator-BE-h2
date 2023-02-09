@@ -22,5 +22,16 @@ export const emailManager = {
                 `          <a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>\n` +
                 "      </p>"
         })
+    },
+    async sendRecoveryCode(email: string, code: string) {
+        await transport.sendMail({
+            from: 'Blog Platform <hellcount.test@gmail.com>',
+            to: email,
+            subject: "Password Recovery",
+            html: "<h1>Password recovery</h1>\n" +
+                "       <p>To finish password recovery please follow the link below:\n" +
+                `          <a href='https://somesite.com/password-recovery?recoveryCode=${code}'>recovery password</a>\n` +
+                "      </p>"
+        })
     }
 }
