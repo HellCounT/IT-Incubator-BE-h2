@@ -7,12 +7,12 @@ import {devicesService} from "../domain/devices-sevice";
 
 export const jwtService = {
     createJwt(user: WithId<UserInsertDbType>): string {
-        return jwt.sign({userId: user._id}, settings.JWT_SECRET, {expiresIn: 10})
+        return jwt.sign({userId: user._id}, settings.JWT_SECRET, {expiresIn: 600})
     },
     async createRefreshJwt(user: WithId<UserInsertDbType>, ip: string, deviceName: string): Promise<string> {
         const deviceId = new ObjectId()
         const issueDate = new Date()
-        const expDateSec = Math.floor( issueDate.getTime() / 1000) + 20
+        const expDateSec = Math.floor( issueDate.getTime() / 1000) + 20*60
         const expDate = new Date(expDateSec * 1000)
         const refreshToken = jwt.sign({
             userId: user._id,
@@ -26,7 +26,7 @@ export const jwtService = {
         const oldRefreshToken: any = jwt.verify(refreshToken, settings.JWT_REFRESH_SECRET)
         await expiredTokensRepo.addTokenToDb(refreshToken, user._id)
         const issueDate = new Date()
-        const expDateSec = Math.floor( issueDate.getTime() / 1000) + 20
+        const expDateSec = Math.floor( issueDate.getTime() / 1000) + 20*60
         const expDate = new Date(expDateSec * 1000)
         const newRefreshToken = jwt.sign({
             userId: user._id,
