@@ -7,6 +7,9 @@ export const likesRepo = {
         return
     },
     async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatus): Promise<void> {
+        console.log(commentId, 'commentId on DB update')
+        console.log(userId, 'userId on DB update')
+        console.log(likeStatus, 'likeStatus on DB update')
         await likesCollection.updateOne({
             commentId: commentId,
             userId: userId
