@@ -18,6 +18,7 @@ export const likesRepo = {
                 likeStatus: likeStatus
             }
         })
+        return
     },
     async deleteAllLikesWhenCommentIsDeleted(commentId: string): Promise<void> {
         await likesCollection.deleteMany({commentId: commentId})
