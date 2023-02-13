@@ -15,7 +15,7 @@ export const commentsService = {
         return await commentsRepo.createComment(newComment)
     },
     async updateComment(commentId: string, userId: ObjectId, content: string): Promise<StatusType> {
-        const foundComment = await commentsQueryRepo.findCommentById(commentId)
+        const foundComment = await commentsQueryRepo.findCommentById(commentId, userId.toString())
         if (!foundComment) return {status: "Not Found"}
         if (foundComment.commentatorInfo.userId === userId.toString()) {
             await commentsRepo.updateComment(commentId, content)
@@ -31,11 +31,11 @@ export const commentsService = {
         }
     },
     async deleteComment(commentId: string, userId: ObjectId): Promise<StatusType> {
-        const foundComment = await commentsQueryRepo.findCommentById(commentId)
+        const foundComment = await commentsQueryRepo.findCommentById(commentId, userId.toString())
         if (!foundComment) return {status: "Not Found"}
         if (foundComment.commentatorInfo.userId === userId.toString()) {
             await commentsRepo.deleteComment(commentId)
-            // ALL LIKES AND DISLIKES FOR THIS COMMENT TO BE DELETED FROM REPO!!!!!!!!
+            await likesService.deleteAllLikesWhenCommentIsDeleted(commentId)
             return {
                 status: "Deleted",
                 code: 204,
@@ -47,8 +47,8 @@ export const commentsService = {
             message: "User is not allowed to delete other user's comment"
         }
     },
-    async updateLikeStatus(commentId: string, userId: ObjectId, inputLikeStatus: LikeStatus): Promise<StatusType> {
-        const foundComment = await commentsQueryRepo.findCommentById(commentId)
+    async updateLikeStatus(commentId: string, activeUserId: ObjectId, inputLikeStatus: LikeStatus): Promise<StatusType> {
+        const foundComment = await commentsQueryRepo.findCommentById(commentId, activeUserId.toString())
         if (!foundComment) {
             return {
                 status: "Not Found",
@@ -56,7 +56,7 @@ export const commentsService = {
                 message: 'Comment is not found'
             }
         } else {
-            const foundUserLike = await commentsQueryRepo.getUserLikeStatusForComment(userId.toString(), commentId)
+            const foundUserLike = await commentsQueryRepo.getUserLikeForComment(activeUserId.toString(), commentId)
             let currentLikesCount = foundComment.likesInfo.likesCount
             let currentDislikesCount = foundComment.likesInfo.dislikesCount
             let updatedLikeStatus = inputLikeStatus
@@ -95,16 +95,21 @@ export const commentsService = {
                     break
             }
             if (!foundUserLike) {
-                await likesService.createNewLike(commentId, userId.toString(), updatedLikeStatus)
-                await
+                await likesService.createNewLike(commentId, activeUserId.toString(), updatedLikeStatus)
+                await commentsRepo.updateLikesCounters(currentLikesCount, currentDislikesCount, commentId)
                 return {
                     status: "No content",
                     code: 204,
                     message: "Like has been created"
                 }
-
             } else {
-                await likesService.updateLikeStatus()
+                await likesService.updateLikeStatus(commentId, activeUserId.toString(), updatedLikeStatus)
+                await commentsRepo.updateLikesCounters(currentLikesCount, currentDislikesCount, commentId)
+                return {
+                    status: "No content",
+                    code: 204,
+                    message: "Like status has been updated"
+                }
             }
         }
 

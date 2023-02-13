@@ -133,7 +133,7 @@ export const postsQueryRepo = {
 }
 
 export const commentsQueryRepo = {
-    async findCommentsByPostId(postId: string, q: QueryParser): Promise<CommentPaginatorType | null> {
+    async findCommentsByPostId(postId: string, q: QueryParser, activeUserId = ''): Promise<CommentPaginatorType | null> {
         const foundCommentsCount = await commentsCollection.countDocuments({postId: {$eq: postId}})
         const reqPageDbComments = await commentsCollection.find({postId: {$eq: postId}})
             .sort({[q.sortBy]: q.sortDirection})
@@ -142,32 +142,37 @@ export const commentsQueryRepo = {
             .toArray()
         if (!reqPageDbComments) return null
         else {
-            const pageCommentsByPostId = reqPageDbComments.map(c => commentsQueryRepo._mapCommentToViewType(c))
+            const items = []
+            for await (const c of reqPageDbComments) {
+                const comment = await this._mapCommentToViewType(c, activeUserId)
+                items.push(comment)
+            }
+            // const pageCommentsByPostId = reqPageDbComments.map(c => commentsQueryRepo._mapCommentToViewType(c, activeUserId))
             return {
                 pagesCount: Math.ceil(foundCommentsCount / q.pageSize),
                 page: q.pageNumber,
                 pageSize: q.pageSize,
                 totalCount: foundCommentsCount,
-                items: pageCommentsByPostId
+                items: items
             }
         }
     },
-    async findCommentById(id: string): Promise<CommentViewType | null> {
+    async findCommentById(id: string, activeUserId: string): Promise<CommentViewType | null> {
         if (!ObjectId.isValid(id)) return null
         else {
             const foundComment = await commentsCollection.findOne({_id: new ObjectId(id)})
-            if (foundComment) return commentsQueryRepo._mapCommentToViewType(foundComment)
+            if (foundComment) return commentsQueryRepo._mapCommentToViewType(foundComment, activeUserId)
             else return null
         }
     },
-    async getUserLikeStatusForComment(userId: string, commentId: string): Promise<WithId<LikeInsertDbType> | null> {
-        const result = await likesCollection.findOne({
+    async getUserLikeForComment(userId: string, commentId: string): Promise<WithId<LikeInsertDbType> | null> {
+        return await likesCollection.findOne({
             commentId: commentId,
             userId: userId,
         })
-        return result
     },
-    _mapCommentToViewType(comment: WithId<CommentInsertDbType>, userLikeStatus: LikeStatus): CommentViewType {
+    async _mapCommentToViewType(comment: WithId<CommentInsertDbType>, activeUserId: string): Promise<CommentViewType> {
+        const like = await this.getUserLikeForComment(activeUserId, comment._id.toString())
         return {
             id: comment._id.toString(),
             content: comment.content,
@@ -179,11 +184,10 @@ export const commentsQueryRepo = {
             likesInfo: {
                 likesCount: comment.likesInfo.likesCount,
                 dislikesCount: comment.likesInfo.dislikesCount,
-                myStatus: userLikeStatus,
+                myStatus: like?.likeStatus || LikeStatus.none,
             }
         }
     }
-
 }
 
 export const usersQueryRepo = {

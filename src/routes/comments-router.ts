@@ -9,7 +9,7 @@ export const commentsRouter = Router({})
 commentsRouter.get('/:id',
     parseUserIdByToken,
     async (req: Request, res: Response) => {
-    const commentIdSearchResult = await commentsQueryRepo.findCommentById(req.params.id)
+    const commentIdSearchResult = await commentsQueryRepo.findCommentById(req.params.id, req.user?._id)
     if (commentIdSearchResult) return res.status(200).send(commentIdSearchResult)
     else res.sendStatus(404)
 })
@@ -43,5 +43,7 @@ commentsRouter.put('/:commentId/like-status',
     inputValidation,
     //Handlers
     async (req: Request, res: Response) => {
-
+        const result = await commentsService.updateLikeStatus(req.params.commentId, req.user?._id, req.body.likeStatus)
+        if (result.status === 'No content') res.sendStatus(204)
+        if (result.status === 'Not Found') res.sendStatus(404)
     })

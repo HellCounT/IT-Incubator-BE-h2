@@ -11,7 +11,7 @@ import {commentsQueryRepo, postsQueryRepo} from "../repositories/queryRepo";
 import {parseQueryPagination} from "../application/queryParsers";
 import {QueryParser} from "../types/types";
 import {commentsService} from "../domain/comments-service";
-import {authMiddleware} from "../middleware/auth-middleware";
+import {authMiddleware, parseUserIdByToken} from "../middleware/auth-middleware";
 
 
 export const postsRouter = Router({})
@@ -35,11 +35,12 @@ postsRouter.get('/:postId/comments',
     //Input validation
     commentDataValidator.postIdParamCheck,
     paramIdInputValidation,
+    parseUserIdByToken,
     //Handlers
     async (req: Request, res: Response) => {
         // query validation and parsing
         let queryParams = parseQueryPagination(req)
-        const commentsByPostIdSearchResult = await commentsQueryRepo.findCommentsByPostId(req.params.postId, queryParams)
+        const commentsByPostIdSearchResult = await commentsQueryRepo.findCommentsByPostId(req.params.postId, queryParams, req.user?._id)
         if (commentsByPostIdSearchResult) res.status(200).send(commentsByPostIdSearchResult)
         else res.sendStatus(404)
     })

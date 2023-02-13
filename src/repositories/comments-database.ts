@@ -34,7 +34,7 @@ export const commentsRepo = {
                     dislikesCount: mappedComment.likesInfo.dislikesCount,
                     myStatus: LikeStatus.none
                 }
-                }
+            }
         } else return null
     },
     async updateComment(commentId: string, content: string): Promise<boolean | null> {
@@ -42,11 +42,12 @@ export const commentsRepo = {
         if (!foundComment) return null
         else {
             const result = await commentsCollection.updateOne({_id: new ObjectId(commentId)},
-                {$set:
-            {
-                content: content
-            }
-            })
+                {
+                    $set:
+                        {
+                            content: content
+                        }
+                })
             return result.matchedCount === 1
         }
     },
@@ -55,5 +56,15 @@ export const commentsRepo = {
             const result = await commentsCollection.deleteOne({_id: new ObjectId(commentId)})
             return result.deletedCount === 1
         } else return null
+    },
+    async updateLikesCounters(newLikesCount: number, newDislikesCount: number, commentId: string) {
+        await commentsCollection.updateOne({_id: new ObjectId(commentId)}, {
+            $set:
+                {
+                    "likesInfo.likesCount": newLikesCount,
+                    "likesInfo.dislikesCount": newDislikesCount
+                }
+        })
+        return
     }
 }
