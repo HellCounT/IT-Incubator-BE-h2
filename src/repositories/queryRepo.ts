@@ -169,7 +169,7 @@ export const commentsQueryRepo = {
         console.log(userId, 'userId for getLike')
         console.log(commentId, 'commentId for getLike')
         return await likesCollection.findOne({
-            //"commentId": commentId,
+            "commentId": commentId,
             "userId": userId,
         })
         // return await likesCollection.findOne({$and: [
