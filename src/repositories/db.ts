@@ -4,7 +4,7 @@ import {
     ActiveSessionDbType,
     Blog,
     CommentInsertDbType,
-    ExpiredTokenInsertDbType,
+    ExpiredTokenInsertDbType, LikeInsertDbType,
     Post,
     UserInsertDbType
 } from "../types/types";
@@ -26,6 +26,8 @@ export const usersCollection = client.db().collection<UserInsertDbType>('users')
 export const commentsCollection = client.db().collection<CommentInsertDbType>('comments')
 export const expiredTokensCollection = client.db().collection<ExpiredTokenInsertDbType>('expiredTokens')
 export const activeSessionsCollection = client.db().collection<ActiveSessionDbType>('activeSessions')
+export const likesCollection = client.db().collection<LikeInsertDbType>('likes')
+
 export const runDb = async() => {
     try {
         // Connect the client to server

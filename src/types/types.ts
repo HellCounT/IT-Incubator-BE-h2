@@ -71,10 +71,16 @@ export type CommentCreateType = {
 }
 export type CommentInsertDbType = {
     content: string,
-    userId: string,
-    userLogin: string,
+    commentatorInfo: {
+        userId: string,
+        userLogin: string
+    },
     postId: string,
-    createdAt: string
+    createdAt: string,
+    likesInfo: {
+        likesCount: number,
+        dislikesCount: number
+    }
 }
 export type ExpiredTokenInsertDbType = {
     userId: ObjectId,
@@ -89,7 +95,11 @@ export type ActiveSessionDbType = {
     expirationDate: Date,
     refreshTokenMeta: string
 }
-
+export type LikeInsertDbType = {
+    commentId: string,
+    userId: string,
+    likeStatus: LikeStatus
+}
 
 export type BlogViewType = {
     id: string,
@@ -121,9 +131,17 @@ export type MeViewType = {
 export type CommentViewType = {
     id: string,
     content: string,
-    userId: string,
-    userLogin: string,
-    createdAt: string
+    commentatorInfo: {
+        userId: string,
+        userLogin: string,
+    }
+    createdAt: string,
+    likesInfo: LikesInfoViewType
+}
+export type LikesInfoViewType = {
+    likesCount: number,
+    dislikesCount: number,
+    myStatus: LikeStatus
 }
 export type DeviceViewType = {
     ip: string,
@@ -176,8 +194,14 @@ export type UserQueryParser = {
     searchEmailTerm: string | null
 }
 
+export enum LikeStatus {
+    none = "None",
+    like = "Like",
+    dislike = "Dislike"
+}
+
 export type StatusType = {
-    status: "Not Found" | "Forbidden" | "Updated" | "Deleted" | "Unauthorized" | "Too many requests" | "No content",
+    status: "Not Found" | "Forbidden" | "Updated" | "Deleted" | "Unauthorized" | "Too many requests" | "No content" | "OK",
     code?: number,
     message?: string,
     data?: any,

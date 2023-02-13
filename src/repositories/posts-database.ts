@@ -42,5 +42,11 @@ export const postsRepo = {
             const result = await postsCollection.deleteOne({_id: new ObjectId(inputId)})
             return result.deletedCount === 1
         } else return null
+    },
+    async updateBlogNameInAllRelatedPosts(blogId: string, blogName: string): Promise<void> {
+        await postsCollection.updateMany({blogId: blogId}, {$set:
+                {
+                    blogName: blogName
+                }})
     }
 }

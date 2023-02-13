@@ -1,6 +1,6 @@
 import {ObjectId} from "mongodb";
 import {commentsCollection, postsCollection, usersCollection} from "./db";
-import {CommentCreateType, CommentInsertDbType, CommentViewType} from "../types/types";
+import {CommentCreateType, CommentInsertDbType, CommentViewType, LikeStatus} from "../types/types";
 
 export const commentsRepo = {
     async createComment(newComment: CommentCreateType): Promise<CommentViewType | null> {
@@ -9,18 +9,31 @@ export const commentsRepo = {
         if (foundPost && foundUser) {
             const mappedComment: CommentInsertDbType = {
                 content: newComment.content,
-                userId: newComment.userId,
-                userLogin: foundUser.accountData.login,
+                commentatorInfo: {
+                    userId: newComment.userId,
+                    userLogin: foundUser.accountData.login,
+                },
                 postId: newComment.postId,
-                createdAt: newComment.createdAt
+                createdAt: newComment.createdAt,
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                }
             }
             const result = await commentsCollection.insertOne({...mappedComment})
             return {
                 id: result.insertedId.toString(),
                 content: mappedComment.content,
-                userId: mappedComment.userId,
-                userLogin: mappedComment.userLogin,
-                createdAt: mappedComment.createdAt
+                commentatorInfo: {
+                    userId: mappedComment.commentatorInfo.userId,
+                    userLogin: mappedComment.commentatorInfo.userLogin,
+                },
+                createdAt: mappedComment.createdAt,
+                likesInfo: {
+                    likesCount: mappedComment.likesInfo.likesCount,
+                    dislikesCount: mappedComment.likesInfo.dislikesCount,
+                    myStatus: LikeStatus.none
+                }
                 }
         } else return null
     },

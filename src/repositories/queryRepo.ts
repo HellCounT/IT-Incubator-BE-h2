@@ -1,14 +1,32 @@
-import {activeSessionsCollection, blogsCollection, commentsCollection, postsCollection, usersCollection} from "./db";
+import {
+    activeSessionsCollection,
+    blogsCollection,
+    commentsCollection,
+    likesCollection,
+    postsCollection,
+    usersCollection
+} from "./db";
 import {ObjectId, WithId} from "mongodb";
 import {
     ActiveSessionDbType,
     BlogDbType,
     BlogPaginatorType,
-    BlogViewType, CommentInsertDbType, CommentPaginatorType, CommentViewType, DeviceViewType, MeViewType,
+    BlogViewType,
+    CommentInsertDbType,
+    CommentPaginatorType,
+    CommentViewType,
+    DeviceViewType,
+    LikeInsertDbType,
+    LikeStatus,
+    MeViewType,
     PostDbType,
     PostPaginatorType,
     PostViewType,
-    QueryParser, UserInsertDbType, UserPaginatorType, UserQueryParser, UserViewType
+    QueryParser,
+    UserInsertDbType,
+    UserPaginatorType,
+    UserQueryParser,
+    UserViewType
 } from "../types/types";
 import {jwtService} from "../application/jwt-service";
 import {settings} from "../settings";
@@ -142,13 +160,27 @@ export const commentsQueryRepo = {
             else return null
         }
     },
-    _mapCommentToViewType(comment: WithId<CommentInsertDbType>): CommentViewType {
+    async getUserLikeStatusForComment(userId: string, commentId: string): Promise<WithId<LikeInsertDbType> | null> {
+        const result = await likesCollection.findOne({
+            commentId: commentId,
+            userId: userId,
+        })
+        return result
+    },
+    _mapCommentToViewType(comment: WithId<CommentInsertDbType>, userLikeStatus: LikeStatus): CommentViewType {
         return {
             id: comment._id.toString(),
             content: comment.content,
-            userId: comment.userId,
-            userLogin: comment.userLogin,
-            createdAt: comment.createdAt
+            commentatorInfo: {
+                userId: comment.commentatorInfo.userId,
+                userLogin: comment.commentatorInfo.userLogin,
+            },
+            createdAt: comment.createdAt,
+            likesInfo: {
+                likesCount: comment.likesInfo.likesCount,
+                dislikesCount: comment.likesInfo.dislikesCount,
+                myStatus: userLikeStatus,
+            }
         }
     }
 

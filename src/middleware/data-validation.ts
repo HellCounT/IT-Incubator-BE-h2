@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {body, CustomValidator, param, validationResult} from "express-validator";
 import {blogsCollection, postsCollection, usersCollection} from "../repositories/db";
 import {ObjectId} from "mongodb";
+import {LikeStatus} from "../types/types";
 
 const isValidBlogId: CustomValidator = async (blogId: string) => {
     if (await blogsCollection.findOne({_id: new ObjectId(blogId)})) {
@@ -56,6 +57,12 @@ const validationCodeExistsAndNotConfirmed: CustomValidator = async (code: string
         throw new Error('Invalid code')
     }
 }
+const likeModelValidator: CustomValidator = (likeInput: string) => {
+    if (likeInput === LikeStatus.like
+        || likeInput === LikeStatus.dislike
+        || likeInput === LikeStatus.none) return true
+    else return false
+}
 
 export const blogDataValidator = {
     nameCheck: body('name').exists().isString().trim().isLength({min: 1, max: 15}).withMessage("Name is invalid"),
@@ -82,6 +89,9 @@ export const commentDataValidator = {
     contentCheck: body("content").isString().trim().isLength({min: 20, max: 300}).withMessage("Content is invalid"),
     postIdParamCheck: param("postId").exists().isString().custom(isValidPostIdParam)
 }
+
+export const likeInputValidator = body("likeStatus").isString().notEmpty().custom(likeModelValidator).withMessage('Invalid Like data input')
+
 export const userDataValidator = {
     loginCheck: body('login').isString().trim().isLength({
         min: 3,

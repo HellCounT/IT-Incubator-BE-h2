@@ -17,5 +17,8 @@ export const postsService = {
     },
     async deletePost(inputId: string): Promise <boolean | null> {
         return await postsRepo.deletePost(inputId)
+    },
+    async updateBlogNameInAllRelatedPosts(blogId: string, blogName: string): Promise<void> {
+        return await postsRepo.updateBlogNameInAllRelatedPosts(blogId, blogName)
     }
 }

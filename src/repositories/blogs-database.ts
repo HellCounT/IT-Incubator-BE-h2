@@ -1,6 +1,7 @@
 import {blogsCollection} from "./db";
 import {InsertOneResult, ObjectId} from "mongodb";
 import {Blog} from "../types/types";
+import {postsService} from "../domain/posts-service";
 
 export const blogsRepo = {
     async createBlog(newBlog: Blog): Promise<InsertOneResult> {
@@ -15,6 +16,7 @@ export const blogsRepo = {
                         description: desc,
                         websiteUrl: website
                     }})
+            if (title) await postsService.updateBlogNameInAllRelatedPosts(inputId, title)
             return result.matchedCount === 1
         } else return null
     },

@@ -1,12 +1,14 @@
 import {Request, Response, Router} from "express";
 import {commentsService} from "../domain/comments-service";
-import {commentDataValidator, inputValidation} from "../middleware/data-validation";
+import {commentDataValidator, inputValidation, likeInputValidator} from "../middleware/data-validation";
 import {commentsQueryRepo} from "../repositories/queryRepo";
-import {authMiddleware} from "../middleware/auth-middleware";
+import {authMiddleware, parseUserIdByToken} from "../middleware/auth-middleware";
 
 export const commentsRouter = Router({})
 
-commentsRouter.get('/:id', async (req: Request, res: Response) => {
+commentsRouter.get('/:id',
+    parseUserIdByToken,
+    async (req: Request, res: Response) => {
     const commentIdSearchResult = await commentsQueryRepo.findCommentById(req.params.id)
     if (commentIdSearchResult) return res.status(200).send(commentIdSearchResult)
     else res.sendStatus(404)
@@ -34,3 +36,12 @@ commentsRouter.delete('/:commentId',
     if (deleteStatus.status === "Not Found") res.sendStatus(404)
     if (deleteStatus.status === "Forbidden") res.sendStatus(403)
 })
+
+commentsRouter.put('/:commentId/like-status',
+    authMiddleware,
+    likeInputValidator,
+    inputValidation,
+    //Handlers
+    async (req: Request, res: Response) => {
+
+    })
