@@ -10,7 +10,7 @@ export const likesRepo = {
         console.log(commentId, 'commentId on DB update')
         console.log(userId, 'userId on DB update')
         console.log(likeStatus, 'likeStatus on DB update')
-        const updateRes = await likesCollection.updateOne({
+        await likesCollection.updateOne({
             commentId: commentId,
             userId: userId
         }, {
@@ -18,7 +18,6 @@ export const likesRepo = {
                 likeStatus: likeStatus
             }
         })
-        console.log(updateRes.modifiedCount, 'Updated like')
         return
     },
     async deleteAllLikesWhenCommentIsDeleted(commentId: string): Promise<void> {
