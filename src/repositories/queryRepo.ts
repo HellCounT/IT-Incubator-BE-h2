@@ -145,9 +145,9 @@ export const commentsQueryRepo = {
             const items = []
             for await (const c of reqPageDbComments) {
                 const comment = await this._mapCommentToViewType(c, activeUserId)
+                console.log(comment, 'Mapped comment ##')
                 items.push(comment)
             }
-            // const pageCommentsByPostId = reqPageDbComments.map(c => commentsQueryRepo._mapCommentToViewType(c, activeUserId))
             return {
                 pagesCount: Math.ceil(foundCommentsCount / q.pageSize),
                 page: q.pageNumber,
@@ -173,6 +173,7 @@ export const commentsQueryRepo = {
     },
     async _mapCommentToViewType(comment: WithId<CommentInsertDbType>, activeUserId: string): Promise<CommentViewType> {
         const like = await this.getUserLikeForComment(activeUserId, comment._id.toString())
+        console.log(like, 'Found user like')
         return {
             id: comment._id.toString(),
             content: comment.content,
