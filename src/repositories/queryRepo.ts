@@ -166,6 +166,8 @@ export const commentsQueryRepo = {
         }
     },
     async getUserLikeForComment(userId: string, commentId: string): Promise<WithId<LikeInsertDbType> | null> {
+        console.log(userId, 'userId for getLike')
+        console.log(commentId, 'commentId for getLike')
         return await likesCollection.findOne({
             commentId: commentId,
             userId: userId,
