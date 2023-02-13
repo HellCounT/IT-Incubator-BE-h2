@@ -57,6 +57,7 @@ export const commentsService = {
             }
         } else {
             const foundUserLike = await commentsQueryRepo.getUserLikeForComment(activeUserId.toString(), commentId)
+            console.log(foundUserLike, 'User found in updateLikeStatus')
             let currentLikesCount = foundComment.likesInfo.likesCount
             let currentDislikesCount = foundComment.likesInfo.dislikesCount
             switch (inputLikeStatus) {
