@@ -59,7 +59,6 @@ export const commentsService = {
             const foundUserLike = await commentsQueryRepo.getUserLikeForComment(activeUserId.toString(), commentId)
             let currentLikesCount = foundComment.likesInfo.likesCount
             let currentDislikesCount = foundComment.likesInfo.dislikesCount
-            let updatedLikeStatus = inputLikeStatus
             switch (inputLikeStatus) {
                 case (LikeStatus.like):
                     if (!foundUserLike || foundUserLike.likeStatus === LikeStatus.none) {
@@ -95,7 +94,7 @@ export const commentsService = {
                     break
             }
             if (!foundUserLike) {
-                await likesService.createNewLike(commentId, activeUserId.toString(), updatedLikeStatus)
+                await likesService.createNewLike(commentId, activeUserId.toString(), inputLikeStatus)
                 await commentsRepo.updateLikesCounters(currentLikesCount, currentDislikesCount, commentId)
                 return {
                     status: "No content",
@@ -103,7 +102,7 @@ export const commentsService = {
                     message: "Like has been created"
                 }
             } else {
-                await likesService.updateLikeStatus(commentId, activeUserId.toString(), updatedLikeStatus)
+                await likesService.updateLikeStatus(commentId, activeUserId.toString(), inputLikeStatus)
                 await commentsRepo.updateLikesCounters(currentLikesCount, currentDislikesCount, commentId)
                 return {
                     status: "No content",
