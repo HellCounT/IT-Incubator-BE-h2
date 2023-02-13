@@ -169,8 +169,8 @@ export const commentsQueryRepo = {
         console.log(userId, 'userId for getLike')
         console.log(commentId, 'commentId for getLike')
         return await likesCollection.findOne({
-            commentId: commentId,
-            userId: userId,
+            "commentId": commentId,
+            "userId": userId,
         })
     },
     async _mapCommentToViewType(comment: WithId<CommentInsertDbType>, activeUserId: string): Promise<CommentViewType> {
