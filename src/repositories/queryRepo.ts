@@ -168,7 +168,7 @@ export const commentsQueryRepo = {
     async getUserLikeForComment(userId: string, commentId: string): Promise<WithId<LikeInsertDbType> | null> {
         console.log(userId, 'userId for getLike')
         console.log(commentId, 'commentId for getLike')
-        const likes = await likesCollection.find({}).toArray()
+        const likes = await likesCollection.find({userId: userId}).toArray()
         console.log('likes', likes)
         const like = await likesCollection.findOne({
             "commentId": commentId,
