@@ -32,7 +32,11 @@ export const commentsService = {
     },
     async deleteComment(commentId: string, userId: ObjectId): Promise<StatusType> {
         const foundComment = await commentsQueryRepo.findCommentById(commentId, userId.toString())
-        if (!foundComment) return {status: "Not Found"}
+        if (!foundComment) return {
+            status: "Not Found",
+            code: 404,
+            message: "Comment is not found"
+        }
         if (foundComment.commentatorInfo.userId === userId.toString()) {
             await commentsRepo.deleteComment(commentId)
             await likesService.deleteAllLikesWhenCommentIsDeleted(commentId)
@@ -57,6 +61,7 @@ export const commentsService = {
             }
         } else {
             const foundUserLike = await commentsQueryRepo.getUserLikeForComment(activeUserId.toString(), commentId)
+            console.log(foundUserLike, 'foundUserLike in updateLikeStatus')
             let currentLikesCount = foundComment.likesInfo.likesCount
             let currentDislikesCount = foundComment.likesInfo.dislikesCount
             switch (inputLikeStatus) {
