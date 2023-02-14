@@ -40,7 +40,7 @@ postsRouter.get('/:postId/comments',
     async (req: Request, res: Response) => {
         // query validation and parsing
         let queryParams = parseQueryPagination(req)
-        const commentsByPostIdSearchResult = await commentsQueryRepo.findCommentsByPostId(req.params.postId, queryParams, req.user?._id)
+        const commentsByPostIdSearchResult = await commentsQueryRepo.findCommentsByPostId(req.params.postId, queryParams, req.user?._id.toString())
         if (commentsByPostIdSearchResult) res.status(200).send(commentsByPostIdSearchResult)
         else res.sendStatus(404)
     })
