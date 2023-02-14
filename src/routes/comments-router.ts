@@ -9,7 +9,6 @@ export const commentsRouter = Router({})
 commentsRouter.get('/:id',
     parseUserIdByToken,
     async (req: Request, res: Response) => {
-    console.log(req.user, 'User caught by parseUserIdByToken')
     const commentIdSearchResult = await commentsQueryRepo.findCommentById(req.params.id, req.user?._id.toString())
     if (commentIdSearchResult) return res.status(200).send(commentIdSearchResult)
     else res.sendStatus(404)

@@ -168,10 +168,14 @@ export const commentsQueryRepo = {
     async getUserLikeForComment(userId: string, commentId: string): Promise<WithId<LikeInsertDbType> | null> {
         console.log(userId, 'userId for getLike')
         console.log(commentId, 'commentId for getLike')
-        return await likesCollection.findOne({
+        const likes = await likesCollection.find({}).toArray()
+        console.log('likes', likes)
+        const like = await likesCollection.findOne({
             "commentId": commentId,
-            "userId": userId,
+            "userId": userId
         })
+        console.log('like', like)
+        return like
         // return await likesCollection.findOne({$and: [
         //         {"commentId": commentId},
         //         {"userId": userId}
@@ -179,9 +183,7 @@ export const commentsQueryRepo = {
     },
     async _mapCommentToViewType(comment: WithId<CommentInsertDbType>, activeUserId: string): Promise<CommentViewType> {
         const like = await this.getUserLikeForComment(activeUserId, comment._id.toString())
-        console.log(activeUserId, 'Active user ID')
-        const likes = await likesCollection.find({}).toArray()
-        console.log(likes, 'likes collection')
+
         return {
             id: comment._id.toString(),
             content: comment.content,
