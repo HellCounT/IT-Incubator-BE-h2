@@ -145,7 +145,6 @@ export const commentsQueryRepo = {
             const items = []
             for await (const c of reqPageDbComments) {
                 const comment = await this._mapCommentToViewType(c, activeUserId)
-                console.log(comment, 'Mapped comment ##')
                 items.push(comment)
             }
             return {
@@ -166,25 +165,13 @@ export const commentsQueryRepo = {
         }
     },
     async getUserLikeForComment(userId: string, commentId: string): Promise<WithId<LikeInsertDbType> | null> {
-        console.log(userId, 'userId for getLike')
-        console.log(commentId, 'commentId for getLike')
-        const likes = await likesCollection.find({userId: userId}).toArray()
-        console.log('likes', likes)
-        const like = await likesCollection.findOne({
+        return await likesCollection.findOne({
             "commentId": commentId,
             "userId": userId
         })
-        console.log('like', like)
-        return like
-        // return await likesCollection.findOne({$and: [
-        //         {"commentId": commentId},
-        //         {"userId": userId}
-        //     ]})
     },
     async _mapCommentToViewType(comment: WithId<CommentInsertDbType>, activeUserId: string): Promise<CommentViewType> {
         const like = await this.getUserLikeForComment(activeUserId, comment._id.toString())
-        console.log('like?.likeStatus', like?.likeStatus)
-        console.log('like?.likeStatus || LikeStatus.none', like?.likeStatus || LikeStatus.none)
         return {
             id: comment._id.toString(),
             content: comment.content,
