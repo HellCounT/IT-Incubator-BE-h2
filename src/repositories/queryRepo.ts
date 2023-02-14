@@ -179,7 +179,9 @@ export const commentsQueryRepo = {
     },
     async _mapCommentToViewType(comment: WithId<CommentInsertDbType>, activeUserId: string): Promise<CommentViewType> {
         const like = await this.getUserLikeForComment(activeUserId, comment._id.toString())
-        console.log(like, 'Found user like')
+        console.log(activeUserId, 'Active user ID')
+        const likes = await likesCollection.find({}).toArray()
+        console.log(likes, 'likes collection')
         return {
             id: comment._id.toString(),
             content: comment.content,
