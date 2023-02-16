@@ -28,7 +28,7 @@ export const likesForPostsRepo = {
         await likesInPostsCollection.insertOne(NewLike)
         return
     },
-    async updateLikeStatus(postId: string, userId: string, userLogin: string, addedAt: string, likeStatus: LikeStatus): Promise<void> {
+    async updateLikeStatus(postId: string, userId: string, likeStatus: LikeStatus): Promise<void> {
         await likesInPostsCollection.updateOne({
             postId: postId,
             userId: userId

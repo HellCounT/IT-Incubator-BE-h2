@@ -19,13 +19,14 @@ export const postsService = {
         return await postsRepo.updatePost(inputId, postTitle, short, text, blogId)
     },
     async deletePost(inputId: string): Promise <boolean | null> {
+        await likesForPostsService.deleteAllLikesWhenPostIsDeleted(inputId)
         return await postsRepo.deletePost(inputId)
     },
     async updateBlogNameInAllRelatedPosts(blogId: string, blogName: string): Promise<void> {
         return await postsRepo.updateBlogNameInAllRelatedPosts(blogId, blogName)
     },
     async updateLikeStatus(postId: string, activeUserId: ObjectId, activeUserLogin: string, inputLikeStatus: LikeStatus): Promise<StatusType> {
-        const foundPost = await postsQueryRepo.findPostById(postId)
+        const foundPost = await postsQueryRepo.findPostById(postId, activeUserId.toString())
         if (!foundPost) {
             return {
                 status: "Not Found",
@@ -71,7 +72,7 @@ export const postsService = {
                     break
             }
             if (foundUserLike) {
-                await likesForPostsService.createNewLike()
+                await likesForPostsService.createNewLike(postId, activeUserId.toString(), activeUserLogin, inputLikeStatus)
                 await postsRepo.updateLikesCounters(currentLikesCount, currentDislikesCount, postId)
                 return {
                     status: "No content",
@@ -79,7 +80,7 @@ export const postsService = {
                     message: "Like has been created"
                 }
             } else {
-                await likesForPostsService.updateLikeStatus()
+                await likesForPostsService.updateLikeStatus(postId, activeUserId.toString(), inputLikeStatus)
                 await postsRepo.updateLikesCounters(currentLikesCount, currentDislikesCount, postId)
                 return {
                     status: "No content",

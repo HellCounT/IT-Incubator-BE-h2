@@ -1,6 +1,6 @@
 import {blogsCollection, postsCollection} from "./db";
 import {ObjectId} from "mongodb";
-import {PostCreateType, PostViewType} from "../types/types";
+import {LikeStatus, PostCreateType, PostViewType} from "../types/types";
 
 export const postsRepo = {
     async createPost(newPost: PostCreateType): Promise<PostViewType | null> {
@@ -12,12 +12,22 @@ export const postsRepo = {
                 content: newPost.content,
                 blogId: newPost.blogId,
                 blogName: foundBlog.name,
-                createdAt: newPost.createdAt
+                createdAt: newPost.createdAt,
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0
+                }
             }
             const result = await postsCollection.insertOne({...mappedPost})
             return {
                 id: result.insertedId.toString(),
-                ...mappedPost
+                ...mappedPost,
+                extendedLikesInfo: {
+                    likesCount: mappedPost.likesInfo.likesCount,
+                    dislikesCount: mappedPost.likesInfo.dislikesCount,
+                    myStatus: LikeStatus.none,
+                    newestLikes: []
+                }
             }
         } else return null
     },

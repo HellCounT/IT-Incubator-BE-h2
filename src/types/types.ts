@@ -22,13 +22,16 @@ export type Post = {
     createdAt: string,
 }
 export type PostDbType = {
-    _id: ObjectId
     title: string,
     shortDescription: string,
     content: string,
     blogId: string,
     blogName: string,
     createdAt: string,
+    likesInfo: {
+        likesCount: number,
+        dislikesCount: number
+    }
 }
 export type PostCreateType = {
     title: string,

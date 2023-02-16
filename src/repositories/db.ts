@@ -5,8 +5,7 @@ import {
     Blog,
     CommentInsertDbType,
     ExpiredTokenInsertDbType, CommentLikeInsertDbType,
-    Post,
-    UserInsertDbType, PostLikeInsertDbType
+    UserInsertDbType, PostLikeInsertDbType, PostDbType
 } from "../types/types";
 import {settings} from "../settings";
 dotenv.config()
@@ -20,7 +19,7 @@ if (!mongoUri) {
 console.log(mongoUri)
 export const client = new MongoClient(mongoUri)
 
-export const postsCollection = client.db().collection<Post>('posts')
+export const postsCollection = client.db().collection<PostDbType>('posts')
 export const blogsCollection = client.db().collection<Blog>('blogs')
 export const usersCollection = client.db().collection<UserInsertDbType>('users')
 export const commentsCollection = client.db().collection<CommentInsertDbType>('comments')

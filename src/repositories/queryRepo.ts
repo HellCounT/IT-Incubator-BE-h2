@@ -3,6 +3,7 @@ import {
     blogsCollection,
     commentsCollection,
     likesInCommentsCollection,
+    likesInPostsCollection,
     postsCollection,
     usersCollection
 } from "./db";
@@ -13,10 +14,10 @@ import {
     BlogPaginatorType,
     BlogViewType,
     CommentInsertDbType,
+    CommentLikeInsertDbType,
     CommentPaginatorType,
     CommentViewType,
     DeviceViewType,
-    CommentLikeInsertDbType,
     LikeStatus,
     MeViewType,
     PostDbType,
@@ -71,55 +72,82 @@ export const blogsQueryRepo = {
 }
 
 export const postsQueryRepo = {
-    async viewAllPosts(q: QueryParser): Promise<PostPaginatorType> {
+    async viewAllPosts(q: QueryParser, activeUserId: string): Promise<PostPaginatorType> {
         const allPostsCount = await postsCollection.countDocuments()
         const reqPageDbPosts = await postsCollection.find()
             .sort({[q.sortBy]: q.sortDirection})
             .skip((q.pageNumber - 1) * q.pageSize)
             .limit(q.pageSize)
             .toArray()
-        const pagePosts = reqPageDbPosts.map(p => postsQueryRepo._mapPostToViewType(p))
+        const items = []
+        for await (const p of reqPageDbPosts) {
+            const post = await this._mapPostToViewType(p, activeUserId)
+            items.push(post)
+        }
         return {
             pagesCount: Math.ceil(allPostsCount / q.pageSize),
             page: q.pageNumber,
             pageSize: q.pageSize,
             totalCount: allPostsCount,
-            items: pagePosts
+            items: items
         }
     },
-    async findPostById(id: string): Promise<PostViewType | null> {
+    async findPostById(id: string, activeUserId: string): Promise<PostViewType | null> {
         if (!ObjectId.isValid(id)) return null
         else {
             const foundPost = await postsCollection.findOne({_id: new ObjectId(id)})
-            if (foundPost) return postsQueryRepo._mapPostToViewType(foundPost)
+            if (foundPost) return postsQueryRepo._mapPostToViewType(foundPost, activeUserId)
             else return null
         }
     },
-    async findPostsByBlogId(id: string, q: QueryParser): Promise<PostPaginatorType | null> {
-        if (!ObjectId.isValid(id)) return null
+    async findPostsByBlogId(blogId: string, q: QueryParser, activeUserId: string): Promise<PostPaginatorType | null> {
+        if (!ObjectId.isValid(blogId)) return null
         else {
-            if (await blogsQueryRepo.findBlogById(id)) {
-                const foundPostsCount = await postsCollection.countDocuments({blogId: {$eq: id}})
-                const reqPageDbPosts = await postsCollection.find({blogId: {$eq: id}})
+            if (await blogsQueryRepo.findBlogById(blogId)) {
+                const foundPostsCount = await postsCollection.countDocuments({blogId: {$eq: blogId}})
+                const reqPageDbPosts = await postsCollection.find({blogId: {$eq: blogId}})
                     .sort({[q.sortBy]: q.sortDirection})
                     .skip((q.pageNumber - 1) * q.pageSize)
                     .limit(q.pageSize)
                     .toArray()
                 if (!reqPageDbPosts) return null
                 else {
-                    const pagePostsByBlog = reqPageDbPosts.map(p => postsQueryRepo._mapPostToViewType(p))
+                    const items = []
+                    for await (const p of reqPageDbPosts) {
+                        const post = await this._mapPostToViewType(p, activeUserId)
+                        items.push(post)
+                    }
                     return {
                         pagesCount: Math.ceil(foundPostsCount / q.pageSize),
                         page: q.pageNumber,
                         pageSize: q.pageSize,
                         totalCount: foundPostsCount,
-                        items: pagePostsByBlog
+                        items: items
                     }
                 }
             } else return null
         }
     },
-    _mapPostToViewType(post: PostDbType): PostViewType {
+    async getUserLikeForPost(userId: string, postId: string) {
+        return await likesInPostsCollection.findOne({
+            "postId": postId,
+            "userId": userId
+        })
+    },
+    async _getNewestLikes(postId: string) {
+        return await likesInPostsCollection.find({
+            "postId": postId,
+            "likeStatus": LikeStatus.like
+        }).limit(3).toArray()
+    },
+    async _mapPostToViewType(post: WithId<PostDbType>, userId: string): Promise<PostViewType> {
+        const userLike = await this.getUserLikeForPost(userId, post._id.toString())
+        const newestLikes = await this._getNewestLikes(post._id.toString())
+        const mappedLikes = newestLikes.map(e => {return {
+                addedAt: e.addedAt,
+                userId: e.userId,
+                login: e.userLogin
+            }})
         return {
             id: post._id.toString(),
             title: post.title,
@@ -127,7 +155,13 @@ export const postsQueryRepo = {
             content: post.content,
             blogId: post.blogId,
             blogName: post.blogName,
-            createdAt: post.createdAt
+            createdAt: post.createdAt,
+            extendedLikesInfo: {
+                likesCount: post.likesInfo.likesCount,
+                dislikesCount: post.likesInfo.dislikesCount,
+                myStatus: userLike?.likeStatus || LikeStatus.none,
+                newestLikes: mappedLikes
+            }
         }
     }
 }
