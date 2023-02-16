@@ -2,7 +2,7 @@ import {commentsRepo} from "../repositories/comments-database";
 import {CommentCreateType, LikeStatus, StatusType} from "../types/types";
 import {ObjectId} from "mongodb";
 import {commentsQueryRepo} from "../repositories/queryRepo";
-import {likesService} from "./likes-service";
+import {likesForCommentsService} from "./likes-service";
 
 export const commentsService = {
     async createComment(postId: string, userId: ObjectId, content: string) {
@@ -39,7 +39,7 @@ export const commentsService = {
         }
         if (foundComment.commentatorInfo.userId === userId.toString()) {
             await commentsRepo.deleteComment(commentId)
-            await likesService.deleteAllLikesWhenCommentIsDeleted(commentId)
+            await likesForCommentsService.deleteAllLikesWhenCommentIsDeleted(commentId)
             return {
                 status: "Deleted",
                 code: 204,
@@ -98,7 +98,7 @@ export const commentsService = {
                     break
             }
             if (!foundUserLike) {
-                await likesService.createNewLike(commentId, activeUserId.toString(), inputLikeStatus)
+                await likesForCommentsService.createNewLike(commentId, activeUserId.toString(), inputLikeStatus)
                 await commentsRepo.updateLikesCounters(currentLikesCount, currentDislikesCount, commentId)
                 return {
                     status: "No content",
@@ -106,7 +106,7 @@ export const commentsService = {
                     message: "Like has been created"
                 }
             } else {
-                await likesService.updateLikeStatus(commentId, activeUserId.toString(), inputLikeStatus)
+                await likesForCommentsService.updateLikeStatus(commentId, activeUserId.toString(), inputLikeStatus)
                 await commentsRepo.updateLikesCounters(currentLikesCount, currentDislikesCount, commentId)
                 return {
                     status: "No content",

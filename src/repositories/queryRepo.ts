@@ -2,7 +2,7 @@ import {
     activeSessionsCollection,
     blogsCollection,
     commentsCollection,
-    likesCollection,
+    likesInCommentsCollection,
     postsCollection,
     usersCollection
 } from "./db";
@@ -16,7 +16,7 @@ import {
     CommentPaginatorType,
     CommentViewType,
     DeviceViewType,
-    LikeInsertDbType,
+    CommentLikeInsertDbType,
     LikeStatus,
     MeViewType,
     PostDbType,
@@ -164,8 +164,8 @@ export const commentsQueryRepo = {
             else return null
         }
     },
-    async getUserLikeForComment(userId: string, commentId: string): Promise<WithId<LikeInsertDbType> | null> {
-        return await likesCollection.findOne({
+    async getUserLikeForComment(userId: string, commentId: string): Promise<WithId<CommentLikeInsertDbType> | null> {
+        return await likesInCommentsCollection.findOne({
             "commentId": commentId,
             "userId": userId
         })

@@ -1,13 +1,13 @@
-import {LikeInsertDbType, LikeStatus} from "../types/types";
-import {likesCollection} from "./db";
+import {CommentLikeInsertDbType, LikeStatus, PostLikeInsertDbType} from "../types/types";
+import {likesInCommentsCollection, likesInPostsCollection} from "./db";
 
-export const likesRepo = {
-    async createNewLike(NewLike: LikeInsertDbType): Promise<void> {
-        await likesCollection.insertOne(NewLike)
+export const likesForCommentsRepo = {
+    async createNewLike(NewLike: CommentLikeInsertDbType): Promise<void> {
+        await likesInCommentsCollection.insertOne(NewLike)
         return
     },
     async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatus): Promise<void> {
-        await likesCollection.updateOne({
+        await likesInCommentsCollection.updateOne({
             commentId: commentId,
             userId: userId
         }, {
@@ -18,7 +18,28 @@ export const likesRepo = {
         return
     },
     async deleteAllLikesWhenCommentIsDeleted(commentId: string): Promise<void> {
-        await likesCollection.deleteMany({commentId: commentId})
+        await likesInCommentsCollection.deleteMany({commentId: commentId})
+        return
+    }
+}
+
+export const likesForPostsRepo = {
+    async createNewLike(NewLike: PostLikeInsertDbType): Promise<void> {
+        await likesInPostsCollection.insertOne(NewLike)
+        return
+    },
+    async updateLikeStatus(postId: string, userId: string, userLogin: string, addedAt: string, likeStatus: LikeStatus): Promise<void> {
+        await likesInPostsCollection.updateOne({
+            postId: postId,
+            userId: userId
+        }, {
+            $set: {
+                likeStatus: likeStatus
+            }
+        })
+    },
+    async deleteAllLikesWhenPostIsDeleted(postId: string): Promise<void> {
+        await likesInPostsCollection.deleteMany({postId: postId})
         return
     }
 }

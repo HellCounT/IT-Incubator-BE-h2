@@ -48,5 +48,15 @@ export const postsRepo = {
                 {
                     blogName: blogName
                 }})
+    },
+    async updateLikesCounters(newLikesCount: number, newDislikesCount: number, postId: string) {
+        await postsCollection.updateOne({_id: new ObjectId(postId)}, {
+            $set:
+                {
+                    "extendedLikesInfo.likesCount": newLikesCount,
+                    "extendedLikesInfo.dislikesCount": newDislikesCount
+                }
+        })
+        return
     }
 }

@@ -37,6 +37,13 @@ export type PostCreateType = {
     blogId: string,
     createdAt: string,
 }
+export type PostLikeInsertDbType = {
+    postId: string,
+    userId: string,
+    userLogin: string,
+    addedAt: string,
+    likeStatus: LikeStatus
+}
 export type UserInsertDbType = {
     accountData: {
         login: string,
@@ -82,6 +89,11 @@ export type CommentInsertDbType = {
         dislikesCount: number
     }
 }
+export type CommentLikeInsertDbType = {
+    commentId: string,
+    userId: string,
+    likeStatus: LikeStatus
+}
 export type ExpiredTokenInsertDbType = {
     userId: ObjectId,
     refreshToken: string,
@@ -94,11 +106,6 @@ export type ActiveSessionDbType = {
     issuedAt: Date,
     expirationDate: Date,
     refreshTokenMeta: string
-}
-export type LikeInsertDbType = {
-    commentId: string,
-    userId: string,
-    likeStatus: LikeStatus
 }
 
 export type BlogViewType = {
@@ -116,6 +123,7 @@ export type PostViewType = {
     blogId: string,
     blogName: string,
     createdAt: string,
+    extendedLikesInfo: ExtendedLikesInfoViewType
 }
 export type UserViewType = {
     id: string,
@@ -142,6 +150,14 @@ export type LikesInfoViewType = {
     likesCount: number,
     dislikesCount: number,
     myStatus: LikeStatus
+}
+export type newestLike = {
+    addedAt: string,
+    userId: string,
+    login: string
+}
+export type ExtendedLikesInfoViewType = LikesInfoViewType & {
+    newestLikes: newestLike[]
 }
 export type DeviceViewType = {
     ip: string,

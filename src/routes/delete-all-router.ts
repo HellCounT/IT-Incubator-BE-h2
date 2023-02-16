@@ -3,7 +3,7 @@ import {
     activeSessionsCollection,
     blogsCollection,
     commentsCollection,
-    expiredTokensCollection, likesCollection,
+    expiredTokensCollection, likesInCommentsCollection,
     postsCollection,
     usersCollection
 } from "../repositories/db";
@@ -17,6 +17,6 @@ deleteAllRouter.delete('/all-data', async (req: Request, res: Response) => {
     await commentsCollection.deleteMany({})
     await expiredTokensCollection.deleteMany({})
     await activeSessionsCollection.deleteMany({})
-    await likesCollection.deleteMany({})
+    await likesInCommentsCollection.deleteMany({})
     res.sendStatus(204)
 })

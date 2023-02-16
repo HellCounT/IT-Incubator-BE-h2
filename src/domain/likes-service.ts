@@ -1,22 +1,27 @@
-import {LikeInsertDbType, LikeStatus} from "../types/types";
-import {likesRepo} from "../repositories/likes-database";
+import {CommentLikeInsertDbType, LikeStatus, PostLikeInsertDbType} from "../types/types";
+import {likesForCommentsRepo} from "../repositories/likes-database";
+import {WithId} from "mongodb";
 
-export const likesService = {
+export const likesForCommentsService = {
     async createNewLike(commentId: string, userId: string, likeStatus: LikeStatus): Promise<void> {
-        const newLike: LikeInsertDbType = {
+        const newLike: CommentLikeInsertDbType = {
             commentId: commentId,
             userId: userId,
             likeStatus: likeStatus
         }
-        await likesRepo.createNewLike(newLike)
+        await likesForCommentsRepo.createNewLike(newLike)
         return
     },
     async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatus): Promise<void> {
-        await likesRepo.updateLikeStatus(commentId, userId, likeStatus)
+        await likesForCommentsRepo.updateLikeStatus(commentId, userId, likeStatus)
         return
     },
     async deleteAllLikesWhenCommentIsDeleted(commentId: string): Promise<void> {
-        await likesRepo.deleteAllLikesWhenCommentIsDeleted(commentId)
+        await likesForCommentsRepo.deleteAllLikesWhenCommentIsDeleted(commentId)
         return
-    }
+    },
+}
+
+export const likesForPostsService = {
+
 }
