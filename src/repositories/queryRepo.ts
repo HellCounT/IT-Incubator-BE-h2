@@ -155,7 +155,7 @@ export const postsQueryRepo = {
             content: post.content,
             blogId: post.blogId,
             blogName: post.blogName,
-            createdAt: post.createdAt,
+            createdAt: post.createdAt.toISOString(),
             extendedLikesInfo: {
                 likesCount: post.likesInfo.likesCount,
                 dislikesCount: post.likesInfo.dislikesCount,

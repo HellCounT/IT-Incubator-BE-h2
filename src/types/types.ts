@@ -13,21 +13,13 @@ export type BlogDbType = {
     websiteUrl: string,
     createdAt: string,
 }
-export type Post = {
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string,
-}
 export type PostDbType = {
     title: string,
     shortDescription: string,
     content: string,
     blogId: string,
     blogName: string,
-    createdAt: string,
+    createdAt: Date,
     likesInfo: {
         likesCount: number,
         dislikesCount: number
@@ -38,7 +30,7 @@ export type PostCreateType = {
     shortDescription: string,
     content: string,
     blogId: string,
-    createdAt: string,
+    createdAt: Date,
 }
 export type PostLikeInsertDbType = {
     postId: string,

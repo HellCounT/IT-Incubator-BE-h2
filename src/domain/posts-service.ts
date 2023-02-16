@@ -11,7 +11,7 @@ export const postsService = {
             shortDescription: short,
             content: text,
             blogId: blogId,
-            createdAt: new Date().toISOString()
+            createdAt: new Date
         }
             return await postsRepo.createPost(newPost)
     },

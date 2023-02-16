@@ -22,6 +22,7 @@ export const postsRepo = {
             return {
                 id: result.insertedId.toString(),
                 ...mappedPost,
+                createdAt: mappedPost.createdAt.toISOString(),
                 extendedLikesInfo: {
                     likesCount: mappedPost.likesInfo.likesCount,
                     dislikesCount: mappedPost.likesInfo.dislikesCount,
