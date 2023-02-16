@@ -24,6 +24,7 @@ usersRouter.post('/', basicAuth,
     async (req: Request, res: Response) => {
         //User creation
         const userCreationResult = await usersService.createUser(req.body.login, req.body.password, req.body.email)
+        if (!userCreationResult) res.sendStatus(400)
         return res.status(201).send(userCreationResult)
 })
 

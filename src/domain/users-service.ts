@@ -41,6 +41,8 @@ export const usersService = {
             expirationDate: "User Created by SuperAdmin",
             isConfirmed: true
         }
+        if (await usersRepo.findByLoginOrEmail(login) ||
+            await usersRepo.findByLoginOrEmail(email)) return null
         return await usersRepo.createUser(newUser, passwordHash)
     },
     async deleteUser(id: string): Promise<boolean | null> {
