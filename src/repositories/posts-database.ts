@@ -68,8 +68,8 @@ export const postsRepo = {
         await postsCollection.updateOne({_id: new ObjectId(postId)}, {
             $set:
                 {
-                    "extendedLikesInfo.likesCount": newLikesCount,
-                    "extendedLikesInfo.dislikesCount": newDislikesCount
+                    "likesInfo.likesCount": newLikesCount,
+                    "likesInfo.dislikesCount": newDislikesCount
                 }
         })
         return

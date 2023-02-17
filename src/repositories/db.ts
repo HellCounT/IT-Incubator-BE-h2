@@ -5,7 +5,7 @@ import {
     Blog,
     CommentInsertDbType,
     ExpiredTokenInsertDbType, CommentLikeInsertDbType,
-    UserInsertDbType, PostLikeInsertDbType, PostDbType
+    UserInsertDbType, PostDbType
 } from "../types/types";
 import {settings} from "../settings";
 dotenv.config()
