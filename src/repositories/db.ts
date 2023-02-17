@@ -26,7 +26,7 @@ export const commentsCollection = client.db().collection<CommentInsertDbType>('c
 export const expiredTokensCollection = client.db().collection<ExpiredTokenInsertDbType>('expiredTokens')
 export const activeSessionsCollection = client.db().collection<ActiveSessionDbType>('activeSessions')
 export const likesInCommentsCollection = client.db().collection<CommentLikeInsertDbType>('likesInComments')
-export const likesInPostsCollection = client.db().collection<PostLikeInsertDbType>('likesInPosts')
+export const likesInPostsCollection = client.db().collection('likesInPosts')
 
 export const runDb = async() => {
     try {
