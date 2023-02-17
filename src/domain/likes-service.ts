@@ -34,7 +34,6 @@ export const likesForPostsService = {
         return
     },
     async updateLikeStatus(postId: string, userId: string, likeStatus: LikeStatus): Promise<void> {
-        console.log(likeStatus)
         await likesForPostsRepo.updateLikeStatus(postId, userId, likeStatus)
         return
     },
