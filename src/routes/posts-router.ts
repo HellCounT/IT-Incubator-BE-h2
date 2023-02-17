@@ -103,7 +103,7 @@ postsRouter.delete('/:id', basicAuth, async (req: Request, res: Response) => {
     }
 })
 
-postsRouter.post('/:postId/like-status',
+postsRouter.put('/:postId/like-status',
     authMiddleware,
     likeInputValidator,
     inputValidation,
