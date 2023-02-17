@@ -138,13 +138,16 @@ export const postsQueryRepo = {
         return await likesInPostsCollection.find({
             "postId": postId,
             "likeStatus": LikeStatus.like
-        }).limit(3).toArray()
+        })
+            .sort({"addedAt": -1})
+            .limit(3)
+            .toArray()
     },
     async _mapPostToViewType(post: WithId<PostDbType>, userId: string): Promise<PostViewType> {
         const userLike = await this.getUserLikeForPost(userId, post._id.toString())
         const newestLikes = await this._getNewestLikes(post._id.toString())
         const mappedLikes = newestLikes.map(e => {return {
-                addedAt: e.addedAt,
+                addedAt: new Date(e.addedAt).toISOString(),
                 userId: e.userId,
                 login: e.userLogin
             }})
@@ -155,10 +158,10 @@ export const postsQueryRepo = {
             content: post.content,
             blogId: post.blogId,
             blogName: post.blogName,
-            createdAt: post.createdAt.toISOString(),
+            createdAt: new Date(post.createdAt).toISOString(),
             extendedLikesInfo: {
-                likesCount: post.likesInfo.likesCount,
-                dislikesCount: post.likesInfo.dislikesCount,
+                likesCount: post.likesInfo?.likesCount,
+                dislikesCount: post.likesInfo?.dislikesCount,
                 myStatus: userLike?.likeStatus || LikeStatus.none,
                 newestLikes: mappedLikes
             }

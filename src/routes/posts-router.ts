@@ -103,12 +103,12 @@ postsRouter.delete('/:id', basicAuth, async (req: Request, res: Response) => {
     }
 })
 
-postsRouter.put('/:postId/like-status',
+postsRouter.post('/:postId/like-status',
     authMiddleware,
     likeInputValidator,
     inputValidation,
     async(req: Request, res: Response) => {
-    const result = await postsService.updateLikeStatus(req.params.postId, req.user?._id, req.user?.login, req.body.likeStatus)
+    const result = await postsService.updateLikeStatus(req.params.postId, req.user?._id, req.user?.accountData.login, req.body.likeStatus)
     if (result.status === 'No content') res.sendStatus(204)
     if (result.status === 'Not Found') res.sendStatus(404)
 })

@@ -21,7 +21,11 @@ export const postsRepo = {
             const result = await postsCollection.insertOne({...mappedPost})
             return {
                 id: result.insertedId.toString(),
-                ...mappedPost,
+                title: mappedPost.title,
+                shortDescription: mappedPost.shortDescription,
+                content: mappedPost.content,
+                blogId: mappedPost.blogId,
+                blogName: mappedPost.blogName,
                 createdAt: mappedPost.createdAt.toISOString(),
                 extendedLikesInfo: {
                     likesCount: mappedPost.likesInfo.likesCount,

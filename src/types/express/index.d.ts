@@ -1,5 +1,4 @@
 import {WithId} from "mongodb";
-import {UserInsertDbType} from "./types";
 
 declare global {
     namespace Express {

@@ -29,7 +29,7 @@ export const likesForPostsRepo = {
         return
     },
     async updateLikeStatus(postId: string, userId: string, likeStatus: LikeStatus): Promise<void> {
-        await likesInPostsCollection.updateOne({
+        const result = await likesInPostsCollection.updateOne({
             postId: postId,
             userId: userId
         }, {
@@ -37,6 +37,8 @@ export const likesForPostsRepo = {
                 likeStatus: likeStatus
             }
         })
+        console.log(result.modifiedCount)
+        return
     },
     async deleteAllLikesWhenPostIsDeleted(postId: string): Promise<void> {
         await likesInPostsCollection.deleteMany({postId: postId})

@@ -27,13 +27,14 @@ export const likesForPostsService = {
             postId: postId,
             userId: userId,
             userLogin: userLogin,
-            addedAt: new Date().toISOString(),
+            addedAt: new Date(),
             likeStatus: likeStatus
         }
         await likesForPostsRepo.createNewLike(newLike)
         return
     },
     async updateLikeStatus(postId: string, userId: string, likeStatus: LikeStatus): Promise<void> {
+        console.log(likeStatus)
         await likesForPostsRepo.updateLikeStatus(postId, userId, likeStatus)
         return
     },
